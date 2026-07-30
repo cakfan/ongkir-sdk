@@ -1,0 +1,20 @@
+{
+  "name": "ongkir-sdk",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "bun run --filter @ongkir-sdk/core build && bun run --filter @ongkir-sdk/biteship build && bun run --filter @ongkir-sdk/komerce build && bun run --filter @ongkir-sdk/hono build",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "typecheck": "bun run --filter './packages/*' typecheck",
+    "test": "bun run --filter './packages/*' test",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "publish": "changeset publish"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "@changesets/cli": "^2.28.0",
+    "typescript": "^5.7.0"
+  }
+}

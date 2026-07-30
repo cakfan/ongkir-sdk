@@ -1,0 +1,72 @@
+{
+  "success": true,
+  "object": "courier_pricing",
+  "message": "Success to retrieve courier pricing",
+  "code": 20001007,
+  "origin": {
+    "location_id": "5dad2bf246d52d72b87378f6",
+    "latitude": -6.3031123,
+    "longitude": 106.7794934999,
+    "postal_code": 12440,
+    "country_name": "Indonesia",
+    "country_code": "ID",
+    "administrative_division_level_1_name": "DKI Jakarta",
+    "administrative_division_level_1_type": "province",
+    "administrative_division_level_2_name": "Jakarta Selatan",
+    "administrative_division_level_2_type": "city",
+    "administrative_division_level_3_name": "Cilandak",
+    "administrative_division_level_3_type": "district",
+    "administrative_division_level_4_name": "Lebak bulus",
+    "administrative_division_level_4_type": "subdistrict",
+    "address": "Jl. RS. Fatmawati Raya No.29, RT.8/RW.4, Cilandak Bar., Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430, Indonesia"
+  },
+  "destination": {
+    "location_id": "5dad2bf246d52d72b87378f6",
+    "latitude": -6.2441792,
+    "longitude": 106.783529,
+    "postal_code": 12240,
+    "country_name": "Indonesia",
+    "country_code": "ID",
+    "administrative_division_level_1_name": "DKI Jakarta",
+    "administrative_division_level_1_type": "province",
+    "administrative_division_level_2_name": "Jakarta Selatan",
+    "administrative_division_level_2_type": "city",
+    "administrative_division_level_3_name": "Cilandak",
+    "administrative_division_level_3_type": "district",
+    "administrative_division_level_4_name": "Lebak bulus",
+    "administrative_division_level_4_type": "subdistrict",
+    "address": "Jl. RS. Fatmawati Raya No.29, RT.8/RW.4, Cilandak Bar., Kec. Cilandak, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12430, Indonesia"
+  },
+  "pricing": [
+    {
+      "company": "jne",
+      "courier_name": "JNE",
+      "courier_code": "jne",
+      "courier_service_name": "City to City (CTC)",
+      "courier_service_code": "ctc",
+      "currency": "IDR",
+      "description": "Pengiriman city to city",
+      "duration": "2 - 3 days",
+      "shipment_duration_range": "2 - 3",
+      "shipment_duration_unit": "days",
+      "price": 11000,
+      "insurance_fee": 0,
+      "cash_on_delivery_fee": 0
+    },
+    {
+      "company": "sicepat",
+      "courier_name": "SiCepat",
+      "courier_code": "sicepat",
+      "courier_service_name": "Reguler",
+      "courier_service_code": "reg",
+      "currency": "IDR",
+      "description": "Layanan reguler",
+      "duration": "1 - 2 days",
+      "shipment_duration_range": "1 - 2",
+      "shipment_duration_unit": "days",
+      "price": 32000,
+      "insurance_fee": 1000,
+      "cash_on_delivery_fee": 2000
+    }
+  ]
+}

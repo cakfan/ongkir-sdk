@@ -1,0 +1,15 @@
+{
+  "event": "order.status",
+  "courier_tracking_id": "XYZ-123-PQS",
+  "courier_waybill_id": "SKS-XXXXX",
+  "courier_company": "JNE",
+  "courier_type": "REG",
+  "courier_driver_name": "Maulana Imran",
+  "courier_driver_phone": "088888888888",
+  "courier_driver_photo_url": "https://picsum.photos/200",
+  "courier_driver_plate_number": "B 1234 AAA",
+  "courier_link": "https://xxx-yyy-zzz.com",
+  "order_id": "5dd6da88f43bd430ecd5aa2e",
+  "order_price": 100000,
+  "status": "confirmed"
+}
