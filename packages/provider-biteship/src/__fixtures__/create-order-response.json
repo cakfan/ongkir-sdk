@@ -1,0 +1,51 @@
+{
+  "success": true,
+  "object": "order",
+  "id": "5dd599ebdefcd4158eb8470b",
+  "waybill_id": "WYB-1112223333443",
+  "shipper": {
+    "name": "Toko Sumber",
+    "email": "toko@example.com",
+    "phone": "081234567890"
+  },
+  "origin": {
+    "contact_name": "Toko Sumber",
+    "contact_phone": "081234567890",
+    "address": "Jl. Raya Sudirman No. 1",
+    "postal_code": 12440
+  },
+  "destination": {
+    "contact_name": "Budi",
+    "contact_phone": "081298765432",
+    "contact_email": "budi@example.com",
+    "address": "Jl. Merdeka No. 2",
+    "postal_code": 12240
+  },
+  "courier": {
+    "tracking_id": "65ddac3879699035b83dc561",
+    "waybill_id": "WYB-1112223333443",
+    "company": "jne",
+    "type": "reg",
+    "driver_name": null,
+    "driver_phone": null
+  },
+  "delivery": {
+    "datetime": "2026-08-01T10:00+07:00",
+    "type": "now"
+  },
+  "reference_id": "INV-2026-0001",
+  "items": [
+    {
+      "name": "Kaos Polos",
+      "value": 50000,
+      "quantity": 1,
+      "weight": 1000,
+      "length": 10,
+      "width": 10,
+      "height": 10
+    }
+  ],
+  "currency": "IDR",
+  "price": 11000,
+  "status": "confirmed"
+}

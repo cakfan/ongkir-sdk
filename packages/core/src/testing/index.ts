@@ -1,12 +1,34 @@
 import { describe, expect, it } from 'bun:test'
 import type { ShippingProvider } from '../contract'
 import { isShippingSDKError } from '../errors'
+import type { CreateShipmentRequest } from '../types'
 
 export interface ContractTestConfig {
   createProvider: () => ShippingProvider
   validTrackingId: string
   supportsSignatureVerification?: boolean
   supportsWebhooks?: boolean
+  supportsCreateShipment?: boolean
+}
+
+export function sampleCreateShipmentRequest(): CreateShipmentRequest {
+  return {
+    origin: {
+      name: 'Toko Sumber',
+      phone: '081234567890',
+      address: 'Jl. Raya Sudirman No. 1',
+      postalCode: '12440',
+    },
+    destination: {
+      name: 'Budi',
+      phone: '081298765432',
+      address: 'Jl. Merdeka No. 2',
+      postalCode: '12240',
+    },
+    items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 50000, quantity: 1 }],
+    courier: 'jne',
+    service: 'reg',
+  }
 }
 
 export function runProviderContractTests(config: ContractTestConfig) {
@@ -105,6 +127,33 @@ export function runProviderContractTests(config: ContractTestConfig) {
         expect(() => {
           provider.parseWebhook({ id: 'evt_1' }, headers)
         }).toThrow()
+      })
+    })
+
+    describe('createShipment', () => {
+      const createTest = config.supportsCreateShipment !== false ? it : it.skip
+
+      createTest('should return ShipmentResult for valid request', async () => {
+        const result = await provider.createShipment(sampleCreateShipmentRequest())
+
+        expect(typeof result.provider).toBe('string')
+        expect(typeof result.orderId).toBe('string')
+        expect(typeof result.service).toBe('string')
+        expect(typeof result.status).toBe('string')
+        expect(typeof result.cost).toBe('number')
+        expect(typeof result.currency).toBe('string')
+      })
+
+      it('should throw ShippingSDKError for invalid request', async () => {
+        try {
+          await provider.createShipment({
+            ...sampleCreateShipmentRequest(),
+            destination: { ...sampleCreateShipmentRequest().destination, postalCode: '00000' },
+          })
+          expect.unreachable('Expected an error to be thrown')
+        } catch (err) {
+          expect(isShippingSDKError(err)).toBe(true)
+        }
       })
     })
   })

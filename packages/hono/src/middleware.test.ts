@@ -28,6 +28,18 @@ function fakeProvider(name: string): ShippingProvider {
         rawPayload: payload,
       }
     },
+    async createShipment(params) {
+      return {
+        provider: name,
+        orderId: 'ORD-1',
+        awb: 'AWB-1',
+        service: params.service,
+        status: 'confirmed',
+        normalizedStatus: 'confirmed',
+        cost: 10000,
+        currency: 'IDR',
+      }
+    },
   }
 }
 
@@ -40,6 +52,9 @@ function throwingProvider(name: string, code: ShippingSDKError['code'], retryabl
       throw new ShippingSDKError({ code, provider: name, message: `gagal: ${code}`, retryable })
     },
     parseWebhook() {
+      throw new ShippingSDKError({ code, provider: name, message: `gagal: ${code}`, retryable })
+    },
+    async createShipment() {
       throw new ShippingSDKError({ code, provider: name, message: `gagal: ${code}`, retryable })
     },
   }
@@ -142,6 +157,50 @@ describe('createShippingRoutes', () => {
     expect(body.error.code).toBe('VALIDATION_ERROR')
   })
 
+  it('POST /shipments -> 201 dengan ShipmentResult ternormalisasi', async () => {
+    const app = createShippingRoutes({ providers: { biteship: fakeProvider('biteship') } })
+    const res = await app.request('/shipments', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        origin: { name: 'Toko Sumber', phone: '081234567890', address: 'Jl. Raya Sudirman No. 1', postalCode: '12440' },
+        destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2', postalCode: '12240' },
+        items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 50000, quantity: 1 }],
+        courier: 'jne',
+        service: 'reg',
+      }),
+    })
+    expect(res.status).toBe(201)
+    const body = await res.json()
+    expect(body).toMatchObject({ provider: 'biteship', orderId: 'ORD-1', service: 'reg', status: 'confirmed' })
+  })
+
+  it('POST /shipments -> 400 VALIDATION_ERROR kalau body tidak valid', async () => {
+    const app = createShippingRoutes({ providers: { biteship: fakeProvider('biteship') } })
+    const res = await app.request('/shipments', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        origin: { name: 'Toko Sumber', phone: '081234567890', address: 'Jl. Raya Sudirman No. 1' },
+        destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2' },
+        items: [],
+        courier: 'jne',
+        service: 'reg',
+      }),
+    })
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.error.code).toBe('VALIDATION_ERROR')
+  })
+
+  it('POST /shipments -> 400 kalau body bukan JSON valid', async () => {
+    const app = createShippingRoutes({ providers: { biteship: fakeProvider('biteship') } })
+    const res = await app.request('/shipments', { method: 'POST', body: 'bukan-json' })
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.error.code).toBe('VALIDATION_ERROR')
+  })
+
   it('error provider -> HTTP status sesuai mapping error code', async () => {
     const cases: Array<[ShippingSDKError['code'], number]> = [
       ['INVALID_ORIGIN', 422],
@@ -153,6 +212,8 @@ describe('createShippingRoutes', () => {
       ['PROVIDER_UNAVAILABLE', 502],
       ['WEBHOOK_SIGNATURE_INVALID', 401],
       ['WEBHOOK_NOT_SUPPORTED', 501],
+      ['CREATE_SHIPMENT_NOT_SUPPORTED', 501],
+      ['CREATE_SHIPMENT_FAILED', 502],
       ['UNKNOWN', 500],
     ]
     for (const [code, expected] of cases) {
@@ -165,6 +226,26 @@ describe('createShippingRoutes', () => {
       expect(body.error.code).toBe(code)
       expect(typeof body.error.retryable).toBe('boolean')
     }
+  })
+
+  it('POST /shipments -> 501 kalau provider tidak mendukung createShipment', async () => {
+    const app = createShippingRoutes({
+      providers: { komerce: throwingProvider('komerce', 'CREATE_SHIPMENT_NOT_SUPPORTED') },
+    })
+    const res = await app.request('/shipments', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        origin: { name: 'A', phone: '1', address: 'addr' },
+        destination: { name: 'B', phone: '2', address: 'addr' },
+        items: [{ name: 'Item', weightGrams: 500 }],
+        courier: 'jne',
+        service: 'reg',
+      }),
+    })
+    expect(res.status).toBe(501)
+    const body = await res.json()
+    expect(body.error.code).toBe('CREATE_SHIPMENT_NOT_SUPPORTED')
   })
 
   it('route tidak dikenal -> 404 JSON', async () => {

@@ -1,4 +1,14 @@
-import type { RateItem, RateRequest, RateResult, RegionRef, TrackingResult, WebhookEvent } from '@ongkir-sdk/core'
+import type {
+  CreateShipmentRequest,
+  RateItem,
+  RateRequest,
+  RateResult,
+  RegionRef,
+  ShipmentResult,
+  ShipmentStatus,
+  TrackingResult,
+  WebhookEvent,
+} from '@ongkir-sdk/core'
 
 export interface BiteshipItem {
   name: string
@@ -82,6 +92,54 @@ export interface BiteshipWebhookPayload {
   price?: number
 }
 
+export interface BiteshipCreateOrderRequest {
+  origin: {
+    contact_name: string
+    contact_phone: string
+    contact_email?: string
+    address: string
+    postal_code?: number
+  }
+  destination: {
+    contact_name: string
+    contact_phone: string
+    contact_email?: string
+    address: string
+    postal_code?: number
+    cash_on_delivery?: { amount: number }
+  }
+  courier: {
+    company: string
+    type: string
+  }
+  items: Array<{
+    name: string
+    description?: string
+    value: number
+    quantity: number
+    weight: number
+    length?: number
+    width?: number
+    height?: number
+  }>
+  reference_id?: string
+  note?: string
+}
+
+export interface BiteshipCreateOrderResponse {
+  success: boolean
+  id: string
+  waybill_id?: string
+  courier?: {
+    tracking_id?: string
+    company?: string
+    type?: string
+  }
+  price?: number
+  currency?: string
+  status?: string
+}
+
 export function toBiteshipRateRequest(request: RateRequest): BiteshipRateRequest {
   const items: BiteshipItem[] = request.items.map(toBiteshipItem)
 
@@ -161,6 +219,77 @@ function getAdditionalServices(p: BiteshipPricing): RateResult['additionalServic
   return services
 }
 
+export function toBiteshipCreateOrderRequest(request: CreateShipmentRequest): BiteshipCreateOrderRequest {
+  return {
+    origin: {
+      contact_name: request.origin.name,
+      contact_phone: request.origin.phone,
+      contact_email: request.origin.email,
+      address: request.origin.address,
+      ...(request.origin.postalCode ? { postal_code: Number(request.origin.postalCode) } : {}),
+    },
+    destination: {
+      contact_name: request.destination.name,
+      contact_phone: request.destination.phone,
+      contact_email: request.destination.email,
+      address: request.destination.address,
+      ...(request.destination.postalCode ? { postal_code: Number(request.destination.postalCode) } : {}),
+      ...(request.cashOnDelivery ? { cash_on_delivery: { amount: request.cashOnDelivery.amount } } : {}),
+    },
+    courier: {
+      company: request.courier,
+      type: request.service,
+    },
+    items: request.items.map((item) => ({
+      name: item.name,
+      description: item.description,
+      value: item.value ?? 0,
+      quantity: item.quantity ?? 1,
+      weight: item.weightGrams,
+      length: item.lengthCm,
+      width: item.widthCm,
+      height: item.heightCm,
+    })),
+    ...(request.referenceId ? { reference_id: request.referenceId } : {}),
+    ...(request.note ? { note: request.note } : {}),
+  }
+}
+
+export function toCoreShipmentResult(response: BiteshipCreateOrderResponse): ShipmentResult {
+  return {
+    provider: 'biteship',
+    orderId: response.id,
+    awb: response.waybill_id,
+    trackingId: response.courier?.tracking_id,
+    service: response.courier?.type ?? 'unknown',
+    status: response.status ?? 'unknown',
+    normalizedStatus: toShipmentStatus(response.status),
+    cost: response.price ?? 0,
+    currency: response.currency ?? 'IDR',
+  }
+}
+
+export function toShipmentStatus(status?: string): ShipmentStatus {
+  switch (status?.toLowerCase()) {
+    case 'pending':
+    case 'confirmed':
+      return 'confirmed'
+    case 'allocated':
+    case 'picked':
+      return 'pickup'
+    case 'delivering':
+    case 'in_transit':
+      return 'in_transit'
+    case 'delivered':
+      return 'delivered'
+    case 'cancelled':
+    case 'canceled':
+      return 'cancelled'
+    default:
+      return 'unknown'
+  }
+}
+
 export function toCoreTrackingResult(response: BiteshipTrackingResponse): TrackingResult {
   return {
     provider: 'biteship',
@@ -189,6 +318,7 @@ export function toCoreWebhookEvent(payload: BiteshipWebhookPayload, _headers: He
     type: event,
     trackingId,
     status,
+    normalizedStatus: toShipmentStatus(status),
     timestamp,
     rawPayload: payload,
   }

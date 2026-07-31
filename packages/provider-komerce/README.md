@@ -44,6 +44,7 @@ const tracking = await provider.trackShipment('JNE001234567890', { courier: 'jne
 - `getRates()` — via postal code. Adapter me-resolve postal code → RajaOngkir location id lewat endpoint pencarian destination, lalu menghitung biaya. Hasil lookup di-cache per instance.
 - `trackShipment(trackingId, { courier })` — wajib menyertakan kode kurir (contoh `jne`, `sicepat`, `jnt`). Tanpa courier, adapter melempar error dengan pesan yang jelas.
 - `parseWebhook()` — **tidak didukung**. Tier Shipping Cost (termasuk paket Starter gratis dan Pro) tidak menyediakan webhook; notifikasi status hanya ada di API Shipping Delivery (tier Enterprise). Memanggil `parseWebhook()` melempar error `WEBHOOK_NOT_SUPPORTED`.
+- `createShipment()` — **tidak didukung** pada tier ini. Order pengiriman hanya ada di API Shipping Delivery (tier Enterprise) yang merupakan produk terpisah dengan base URL dan mekanisme auth (`x-api-key`) berbeda. Memanggil `createShipment()` melempar error `CREATE_SHIPMENT_NOT_SUPPORTED`.
 
 ## Keterbatasan yang perlu diketahui
 

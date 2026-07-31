@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'bun:test'
+import { type ShippingSDKError, isShippingSDKError } from '@ongkir-sdk/core'
 import { runProviderContractTests } from '@ongkir-sdk/core/testing'
+import createOrderFixture from './__fixtures__/create-order-response.json'
 import ratesFixture from './__fixtures__/rates-response.json'
 import trackingFixture from './__fixtures__/tracking-response.json'
 import { BiteshipProvider } from './adapter'
@@ -49,6 +51,23 @@ function createMockClient(): BiteshipProviderConfig['httpClient'] {
       })
     }
 
+    if (url.includes('/v1/orders') && init?.method === 'POST' && init.body) {
+      const body = JSON.parse(init.body as string) as Record<string, unknown>
+      const dest = (body.destination as Record<string, unknown>) ?? {}
+
+      if (dest.postal_code === 0) {
+        return new Response(JSON.stringify({ success: false, error: 'Invalid destination', code: '40001002' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+
+      return new Response(JSON.stringify(createOrderFixture), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+
     return new Response(JSON.stringify({ success: false }), {
       status: 404,
       headers: { 'Content-Type': 'application/json' },
@@ -90,6 +109,59 @@ describe('BiteshipProvider', () => {
       expect(result.statusHistory).toHaveLength(6)
     })
   })
+
+  describe('createShipment', () => {
+    it('should create order and return normalized ShipmentResult', async () => {
+      const provider = new BiteshipProvider({
+        apiKey: 'test_key',
+        httpClient: mockClient,
+      })
+
+      const result = await provider.createShipment({
+        origin: { name: 'Toko Sumber', phone: '081234567890', address: 'Jl. Raya Sudirman No. 1', postalCode: '12440' },
+        destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2', postalCode: '12240' },
+        items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 50000, quantity: 1 }],
+        courier: 'jne',
+        service: 'reg',
+      })
+
+      expect(result.provider).toBe('biteship')
+      expect(result.orderId).toBe('5dd599ebdefcd4158eb8470b')
+      expect(result.awb).toBe('WYB-1112223333443')
+      expect(result.trackingId).toBe('65ddac3879699035b83dc561')
+      expect(result.service).toBe('reg')
+      expect(result.status).toBe('confirmed')
+      expect(result.normalizedStatus).toBe('confirmed')
+      expect(result.cost).toBe(11000)
+      expect(result.currency).toBe('IDR')
+    })
+
+    it('should throw ShippingSDKError for invalid destination', async () => {
+      const provider = new BiteshipProvider({
+        apiKey: 'test_key',
+        httpClient: mockClient,
+      })
+
+      try {
+        await provider.createShipment({
+          origin: {
+            name: 'Toko Sumber',
+            phone: '081234567890',
+            address: 'Jl. Raya Sudirman No. 1',
+            postalCode: '12440',
+          },
+          destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2', postalCode: '00000' },
+          items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 50000, quantity: 1 }],
+          courier: 'jne',
+          service: 'reg',
+        })
+        expect.unreachable('Expected an error to be thrown')
+      } catch (err) {
+        expect(isShippingSDKError(err)).toBe(true)
+        expect((err as ShippingSDKError).code).toBe('INVALID_DESTINATION')
+      }
+    })
+  })
 })
 
 runProviderContractTests({
@@ -100,4 +172,5 @@ runProviderContractTests({
     }),
   validTrackingId: '6051861741a37414e6637fab',
   supportsSignatureVerification: false,
+  supportsCreateShipment: true,
 })

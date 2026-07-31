@@ -20,6 +20,8 @@ const HTTP_STATUS_BY_ERROR_CODE: Record<string, ContentfulStatusCode> = {
   PROVIDER_UNAVAILABLE: 502,
   WEBHOOK_SIGNATURE_INVALID: 401,
   WEBHOOK_NOT_SUPPORTED: 501,
+  CREATE_SHIPMENT_NOT_SUPPORTED: 501,
+  CREATE_SHIPMENT_FAILED: 502,
   UNKNOWN: 500,
 }
 
@@ -36,6 +38,37 @@ const ratesQuerySchema = z.object({
 
 const trackQuerySchema = z.object({
   courier: z.string().min(1).optional(),
+})
+
+const contactSchema = z.object({
+  name: z.string().min(1),
+  phone: z.string().min(1),
+  email: z.string().email().optional(),
+  address: z.string().min(1),
+  postalCode: z.string().optional(),
+})
+
+const shipmentItemSchema = z.object({
+  name: z.string().min(1),
+  sku: z.string().optional(),
+  description: z.string().optional(),
+  value: z.number().nonnegative().optional(),
+  quantity: z.number().int().positive().optional(),
+  weightGrams: z.number().positive(),
+  lengthCm: z.number().optional(),
+  widthCm: z.number().optional(),
+  heightCm: z.number().optional(),
+})
+
+const createShipmentBodySchema = z.object({
+  origin: contactSchema,
+  destination: contactSchema,
+  items: z.array(shipmentItemSchema).min(1),
+  courier: z.string().min(1),
+  service: z.string().min(1),
+  referenceId: z.string().min(1).optional(),
+  note: z.string().optional(),
+  cashOnDelivery: z.object({ amount: z.number().nonnegative() }).optional(),
 })
 
 function validationError(c: Context, message: string, issues: unknown) {
@@ -129,6 +162,24 @@ export function createShippingRoutes(options: ShippingRoutesOptions): Hono {
       parsed.data.courier ? { courier: parsed.data.courier } : undefined,
     )
     return c.json(result)
+  })
+
+  app.post('/shipments', async (c) => {
+    let body: unknown
+    try {
+      body = await c.req.json()
+    } catch {
+      return c.json({ error: { code: 'VALIDATION_ERROR', message: 'Body harus JSON valid' } }, 400)
+    }
+
+    const parsed = createShipmentBodySchema.safeParse(body)
+    if (!parsed.success) {
+      return validationError(c, 'Body tidak valid', parsed.error.issues)
+    }
+
+    const provider = resolveDefaultProvider(options)
+    const result = await provider.createShipment(parsed.data)
+    return c.json(result, 201)
   })
 
   app.post('/webhooks/:provider', async (c) => {

@@ -85,15 +85,16 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** SDK bisa dipakai untuk checkout end-to-end, bukan cuma cek ongkir.
 
-- [ ] Update `contract.ts`: tambah `createShipment(params: CreateShipmentRequest): Promise<ShipmentResult>`
-- [ ] Definisikan `CreateShipmentRequest`/`ShipmentResult` di core types
-- [ ] Implementasi di `@ongkir-sdk/biteship`
-- [ ] Implementasi di `@ongkir-sdk/komerce` (cek batasan tier akun)
-- [ ] Update `WebhookEvent` untuk status transaksional (pickup, in-transit, delivered, cancelled)
-- [ ] Update contract test suite untuk cover `createShipment`
-- [ ] Dokumentasi jelas soal side-effect: ini benar-benar membuat order ke provider (biaya nyata), beri warning di README
+- [x] Update `contract.ts`: tambah `createShipment(params: CreateShipmentRequest): Promise<ShipmentResult>` — **wajib** di interface `ShippingProvider`
+- [x] Definisikan `CreateShipmentRequest`/`ShipmentResult` di core types (`ShipmentContact`, `ShipmentItem`, `ShipmentStatus`, `ShipmentResult`; `WebhookEvent` + `normalizedStatus`)
+- [x] Implementasi di `@ongkir-sdk/biteship` — `POST /v1/orders`, idempotency via `reference_id`, error `400020xx` → `CREATE_SHIPMENT_FAILED`
+- [x] Implementasi di `@ongkir-sdk/komerce` — **tidak didukung** pada tier Shipping Cost (order cuma ada di API Shipping Delivery/Enterprise). `createShipment()` throw `CREATE_SHIPMENT_NOT_SUPPORTED`, keterbatasan didokumentasikan di README package
+- [x] Update `WebhookEvent` untuk status transaksional (pickup, in-transit, delivered, cancelled) via `normalizedStatus` + `toShipmentStatus` mapper Biteship
+- [x] Update contract test suite untuk cover `createShipment` (success shape + invalid request → `ShippingSDKError`; flag `supportsCreateShipment`)
+- [x] Dokumentasi jelas soal side-effect: ini benar-benar membuat order ke provider (biaya nyata), beri warning di README
+- [x] `@ongkir-sdk/hono`: route `POST /shipments` (201, `VALIDATION_ERROR` 400, `CREATE_SHIPMENT_NOT_SUPPORTED` 501, `CREATE_SHIPMENT_FAILED` 502)
 
-**Exit criteria:** Bisa buat shipment order sungguhan di sandbox kedua provider dan terima update status via webhook.
+**Exit criteria:** Bisa buat shipment order sungguhan di sandbox Biteship dan terima update status via webhook. Untuk Komerce, exit criteria-nya adalah `createShipment` melempar `CREATE_SHIPMENT_NOT_SUPPORTED` dengan pesan yang menjelaskan batasan tier — order sungguhan tidak feasible di tier Shipping Cost (produk terpisah dengan auth berbeda).
 
 ---
 

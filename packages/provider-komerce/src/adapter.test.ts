@@ -176,6 +176,26 @@ describe('KomerceProvider', () => {
       }
     })
   })
+
+  describe('createShipment', () => {
+    it('should throw CREATE_SHIPMENT_NOT_SUPPORTED', async () => {
+      const provider = new KomerceProvider({ apiKey: 'test_key', httpClient: mockClient })
+
+      try {
+        await provider.createShipment({
+          origin: { name: 'A', phone: '1', address: 'addr' },
+          destination: { name: 'B', phone: '2', address: 'addr' },
+          items: [{ name: 'Item', weightGrams: 500 }],
+          courier: 'jne',
+          service: 'reg',
+        })
+        expect.unreachable('Expected an error to be thrown')
+      } catch (err) {
+        expect(isShippingSDKError(err)).toBe(true)
+        expect((err as ShippingSDKError).code).toBe('CREATE_SHIPMENT_NOT_SUPPORTED')
+      }
+    })
+  })
 })
 
 runProviderContractTests({
@@ -187,4 +207,5 @@ runProviderContractTests({
   validTrackingId: 'JNE001234567890',
   supportsSignatureVerification: false,
   supportsWebhooks: false,
+  supportsCreateShipment: false,
 })

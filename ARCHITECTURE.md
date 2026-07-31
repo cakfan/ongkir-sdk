@@ -92,6 +92,8 @@ type ShippingErrorCode =
   | 'PROVIDER_UNAVAILABLE'
   | 'WEBHOOK_SIGNATURE_INVALID'
   | 'WEBHOOK_NOT_SUPPORTED'
+  | 'CREATE_SHIPMENT_NOT_SUPPORTED'
+  | 'CREATE_SHIPMENT_FAILED'
   | 'UNKNOWN'
 ```
 
@@ -155,10 +157,13 @@ interface WebhookEvent {
   type: string
   trackingId: string
   status: string
+  normalizedStatus?: ShipmentStatus   // opsional, kalau payload bisa di-map ke status lintas provider
   timestamp: string
   rawPayload: unknown
 }
 ```
+
+  `ShipmentStatus` = `'confirmed' | 'pickup' | 'in_transit' | 'delivered' | 'cancelled' | 'unknown'` — status ternormalisasi untuk pemakaian transaksional (misal trigger update status di UI). Field `status` tetap menyimpan status mentah provider.
 
   Prioritas: pakai event ID asli dari provider kalau payload menyediakannya (paling reliable). Kalau tidak ada, generate hash deterministik dari field yang stabil — **bukan random UUID** — supaya retry webhook yang identik dari provider menghasilkan `id` yang sama, sehingga tetap idempotent saat dipakai sebagai unique key di sisi consumer.
 - `@ongkir-sdk/hono` menyediakan helper route `POST /webhooks/:provider` yang otomatis pilih adapter yang sesuai dan panggil `parseWebhook`.
@@ -237,10 +242,47 @@ createShippingRoutes({
 
 - `GET /rates` — query params `origin`, `destination` (postal code), `weight` (gram), dimensi/`quantity`/`value` opsional, divalidasi `zod`. Satu request = satu item. Response `RateResult[]`.
 - `GET /track/:id` — query param opsional `courier` diteruskan ke `trackShipment(id, { courier })`.
+- `POST /shipments` — body `CreateShipmentRequest` (zod-validated), dipanggilkan ke `createShipment()` dari `defaultProvider`. Response `ShipmentResult` dengan HTTP 201. Provider yang tidak mendukung create-order → `CREATE_SHIPMENT_NOT_SUPPORTED` (HTTP 501).
 - `POST /webhooks/:provider` — memilih adapter dari map sesuai param URL, lalu `parseWebhook(payload, headers)`.
-- `ShippingSDKError` → JSON `{ error: { code, message, provider, providerErrorCode, retryable } }` dengan status HTTP: 401 (auth/signature), 404 (tracking tidak ditemukan / provider tidak terdaftar), 422 (region invalid / rate tidak tersedia), 429 (rate limit), 501 (`WEBHOOK_NOT_SUPPORTED`), 502 (provider unavailable), 500 (unknown). Error validasi → 400 `VALIDATION_ERROR`.
+- `ShippingSDKError` → JSON `{ error: { code, message, provider, providerErrorCode, retryable } }` dengan status HTTP: 401 (auth/signature), 404 (tracking tidak ditemukan / provider tidak terdaftar), 422 (region invalid / rate tidak tersedia), 429 (rate limit), 501 (`WEBHOOK_NOT_SUPPORTED`/`CREATE_SHIPMENT_NOT_SUPPORTED`), 502 (provider unavailable / `CREATE_SHIPMENT_FAILED`), 500 (unknown). Error validasi → 400 `VALIDATION_ERROR`.
 - `hono` & `zod` adalah peerDependencies (menghindari duplicate instance kalau consumer sudah punya hono).
 
-## 10. Status
+## 10. createShipment (v2)
 
-Semua keputusan arsitektur di dokumen ini final untuk v1. Detail implementasi (edge case per provider) boleh muncul saat coding, tapi tidak mengubah contract publik tanpa update dokumen ini dulu.
+`createShipment(params: CreateShipmentRequest): Promise<ShipmentResult>` — membuat order pengiriman aktual ke provider (side-effect nyata: biaya transaksi, butuh saldo/balance di akun provider). **Bukan** operasi read-only seperti `getRates`/`trackShipment`.
+
+```ts
+interface CreateShipmentRequest {
+  origin: ShipmentContact        // { name, phone, email?, address, postalCode? }
+  destination: ShipmentContact   // { name, phone, email?, address, postalCode? }
+  items: ShipmentItem[]          // { name, sku?, description?, value?, quantity?, weightGrams, lengthCm?, widthCm?, heightCm? }
+  courier: string                // kode kurir, cocok dgn RateResult.provider
+  service: string                // tipe layanan, cocok dgn RateResult.service
+  referenceId?: string           // idempotency (Biteship reference_id / Shipper external_id)
+  note?: string
+  cashOnDelivery?: { amount: number }
+}
+
+interface ShipmentResult {
+  provider: string
+  orderId: string                // ID order di sistem provider
+  awb?: string                   // nomor resi kurir (bisa belum ada saat baru dibuat)
+  trackingId?: string
+  service: string
+  status: string                 // status mentah provider
+  normalizedStatus?: ShipmentStatus
+  cost: number
+  currency: string
+  estimatedDelivery?: string
+}
+```
+
+Catatan per provider:
+
+- **Biteship**: `POST /v1/orders`. Butuh saldo cukup; error `400020xx` di-map ke `CREATE_SHIPMENT_FAILED` (reference-id duplikat juga di sini, biar consumer bisa pakai `referenceId` sebagai idempotency key).
+- **Komerce (RajaOngkir Shipping Cost tier)**: create-order **tidak tersedia** di tier ini — endpoint Store Order hanya ada di produk terpisah "API Shipping Delivery" (base URL `api.collaborator.komerce.id`, header `x-api-key`, akun/tier berbeda). `createShipment()` melempar `CREATE_SHIPMENT_NOT_SUPPORTED`, konsisten dengan perilaku `parseWebhook()` yang juga `WEBHOOK_NOT_SUPPORTED`.
+- Error apa pun dari create-order dinormalisasi ke `ShippingSDKError` sebelum keluar dari adapter.
+
+## 11. Status
+
+Semua keputusan arsitektur di dokumen ini final untuk v1; section §10 adalah keputusan untuk v2 (Fase 4). Detail implementasi (edge case per provider) boleh muncul saat coding, tapi tidak mengubah contract publik tanpa update dokumen ini dulu.

@@ -11,9 +11,16 @@ const TRACKING_ERROR_MAP: Record<string, string> = {
   '40003002': 'TRACKING_NOT_FOUND',
 }
 
+const ORDER_ERROR_MAP: Record<string, string> = {
+  '40002001': 'PROVIDER_AUTH_FAILED',
+  '40002041': 'CREATE_SHIPMENT_FAILED',
+  '40002059': 'CREATE_SHIPMENT_FAILED',
+  '40002060': 'CREATE_SHIPMENT_FAILED',
+}
+
 function getErrorCode(httpStatus: number, bodyCode?: string): string {
   if (bodyCode) {
-    return RATES_ERROR_MAP[bodyCode] ?? TRACKING_ERROR_MAP[bodyCode] ?? 'UNKNOWN'
+    return RATES_ERROR_MAP[bodyCode] ?? TRACKING_ERROR_MAP[bodyCode] ?? ORDER_ERROR_MAP[bodyCode] ?? 'UNKNOWN'
   }
 
   switch (httpStatus) {

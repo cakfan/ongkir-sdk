@@ -29,7 +29,7 @@ app.route(
       biteship: new BiteshipProvider({ apiKey: process.env.BITESHIP_API_KEY! }),
       komerce: new KomerceProvider({ apiKey: process.env.RAJAONGKIR_API_KEY! }),
     },
-    // Provider untuk /rates & /track/:id. Wajib kalau mount > 1 provider.
+    // Provider untuk /rates, /track/:id & /shipments. Wajib kalau mount > 1 provider.
     defaultProvider: process.env.DEFAULT_PROVIDER ?? 'biteship',
   }),
 )
@@ -66,6 +66,14 @@ Response: `TrackingResult` ternormalisasi.
 
 Response: `{ ok: true, event: WebhookEvent }`.
 
+### `POST /shipments`
+
+Body wajib JSON valid dan sesuai `CreateShipmentRequest` (origin/destination berisi `name`, `phone`, `address`, `postalCode?`; `items` min 1 dengan `name` + `weightGrams`; `courier`; `service`; plus opsional `referenceId`, `note`, `cashOnDelivery`).
+
+Response: HTTP 201 `ShipmentResult` ternormalisasi (`orderId`, `awb?`, `trackingId?`, `status`, `normalizedStatus?`, `cost`, `currency`).
+
+> **Warning:** route ini memicu aksi nyata di provider (membuat order dan berpotensi menagih saldo). Pastikan dipanggil hanya setelah user mengonfirmasi, dan manfaatkan `referenceId` untuk idempotency kalau provider mendukung.
+
 ## Error shape
 
 Semua `ShippingSDKError` dari provider dinormalisasi ke JSON dengan HTTP status sesuai kode:
@@ -91,6 +99,8 @@ Semua `ShippingSDKError` dari provider dinormalisasi ke JSON dengan HTTP status 
 | `PROVIDER_UNAVAILABLE` | 502 |
 | `WEBHOOK_SIGNATURE_INVALID` | 401 |
 | `WEBHOOK_NOT_SUPPORTED` | 501 |
+| `CREATE_SHIPMENT_NOT_SUPPORTED` | 501 |
+| `CREATE_SHIPMENT_FAILED` | 502 |
 | `UNKNOWN` | 500 |
 
 Error validasi query/body → 400 `VALIDATION_ERROR`. Provider tidak terdaftar di map → 404 `PROVIDER_NOT_FOUND`. Error non-SDK tidak dibocorkan ke response (hanya di-`console.error`, response 500 generic).

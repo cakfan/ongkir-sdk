@@ -1,6 +1,8 @@
 import type {
+  CreateShipmentRequest,
   RateRequest,
   RateResult,
+  ShipmentResult,
   ShippingProvider,
   TrackShipmentOptions,
   TrackingResult,
@@ -91,6 +93,15 @@ export class KomerceProvider implements ShippingProvider {
       provider: 'komerce',
       message:
         'The RajaOngkir Shipping Cost tier does not provide webhooks. Webhook delivery is only available on the Enterprise-tier Shipping Delivery API.',
+    })
+  }
+
+  async createShipment(_params: CreateShipmentRequest): Promise<ShipmentResult> {
+    throw new ShippingSDKError({
+      code: 'CREATE_SHIPMENT_NOT_SUPPORTED',
+      provider: 'komerce',
+      message:
+        'Order creation is only available on the Shipping Delivery (Enterprise) tier. This provider uses the RajaOngkir Shipping Cost tier, which exposes shipping rates and tracking only.',
     })
   }
 

@@ -44,6 +44,8 @@ try {
 | `PROVIDER_UNAVAILABLE` | Provider down atau error internal |
 | `WEBHOOK_SIGNATURE_INVALID` | Signature webhook tidak cocok |
 | `WEBHOOK_NOT_SUPPORTED` | Provider/tier tidak menyediakan webhook |
+| `CREATE_SHIPMENT_NOT_SUPPORTED` | Provider/tier tidak mendukung pembuatan order |
+| `CREATE_SHIPMENT_FAILED` | Provider menolak order pengiriman |
 | `UNKNOWN` | Error lain yang belum terklasifikasi |
 
 Helper: `isShippingSDKError(err)` untuk guard type, `isRetryable(err)` untuk keputusan retry, dan `SHIPPING_ERROR_CODES` untuk daftar lengkap kode.
@@ -57,7 +59,7 @@ const provider: ShippingProvider = {
   async getRates(params) { /* ... */ },
   async trackShipment(trackingId, options) { /* ... */ },
   parseWebhook(payload, headers) { /* ... */ },
-  // createShipment? — belum aktif di v1 (read-only), masuk v2
+  async createShipment(params) { /* ... */ },
 }
 ```
 
@@ -68,17 +70,21 @@ export interface ShippingProvider {
   getRates(params: RateRequest): Promise<RateResult[]>
   trackShipment(trackingId: string, options?: TrackShipmentOptions): Promise<TrackingResult>
   parseWebhook(payload: unknown, headers: Headers): WebhookEvent
-  createShipment?(params: CreateShipmentRequest): Promise<ShipmentResult>
+  createShipment(params: CreateShipmentRequest): Promise<ShipmentResult>
 }
 ```
 
 Tipe hasil selalu ternormalisasi — `RateResult.provider` memakai nama SDK (bukan nama endpoint provider), `cost` selalu angka, `currency` selalu diisi.
 
+> **Warning:** `createShipment()` adalah aksi nyata — membuat order pengiriman ke provider dan berpotensi menagih saldo. Provider yang tidak mendukungnya melempar `CREATE_SHIPMENT_NOT_SUPPORTED`; provider yang menolak order melempar `CREATE_SHIPMENT_FAILED`. Jangan panggil sebelum user mengonfirmasi, dan pakai `referenceId` untuk idempotency kalau provider mendukung.
+
 ## Tipe utama
 
 - `RateRequest` / `RateResult` — permintaan dan hasil cek tarif. Origin/destination menerima `{ postalCode }` atau `RegionRef` lengkap.
 - `TrackingResult` — riwayat status pengiriman (`statusHistory`) + estimasi dan metadata.
-- `WebhookEvent` — hasil parse webhook: `id`, `provider`, `type`, `trackingId`, `status`, `timestamp`, `rawPayload`.
+- `WebhookEvent` — hasil parse webhook: `id`, `provider`, `type`, `trackingId`, `status`, `normalizedStatus?`, `timestamp`, `rawPayload`.
+- `CreateShipmentRequest` / `ShipmentResult` — input dan hasil pembuatan order. `CreateShipmentRequest` berisi `origin`/`destination` (`ShipmentContact`), `items` (`ShipmentItem[]`), `courier`, `service`, plus opsional `referenceId`, `note`, `cashOnDelivery`. `ShipmentResult` selalu berisi `orderId`, plus `awb?`, `trackingId?`, `status`, `normalizedStatus?`, `cost`, `currency`.
+- `ShipmentStatus` — status ternormalisasi lintas provider: `confirmed` | `pickup` | `in_transit` | `delivered` | `cancelled` | `unknown`.
 - `RegionRef` — provinsi/kota/kecamatan/kodepos (+ `lat`/`lng` opsional).
 
 ## Region resolver
@@ -110,6 +116,8 @@ describe('MyProvider', () => {
     validTrackingId: 'JNE001234567890',
     supportsSignatureVerification: false,
     supportsWebhooks: false,
+    // true → suite juga mengetes createShipment (success + invalid request)
+    supportsCreateShipment: true,
   })
 })
 ```

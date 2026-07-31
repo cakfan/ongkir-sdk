@@ -63,23 +63,62 @@ export interface WebhookEvent {
   type: string
   trackingId: string
   status: string
+  /** Status ternormalisasi lintas provider (opsional, kalau payload bisa di-map). */
+  normalizedStatus?: ShipmentStatus
   timestamp: string
   rawPayload: unknown
 }
 
-export interface CreateShipmentRequest {
-  origin: RegionRef | { postalCode: string }
-  destination: RegionRef | { postalCode: string }
-  items: RateItem[]
-  service: string
-  provider: string
+export interface ShipmentContact {
+  name: string
+  phone: string
+  email?: string
+  address: string
+  postalCode?: string
 }
+
+export interface ShipmentItem {
+  name: string
+  sku?: string
+  description?: string
+  value?: number
+  quantity?: number
+  weightGrams: number
+  lengthCm?: number
+  widthCm?: number
+  heightCm?: number
+}
+
+export interface CreateShipmentRequest {
+  origin: ShipmentContact
+  destination: ShipmentContact
+  items: ShipmentItem[]
+  /** Kode kurir — cocokkan dengan `RateResult.provider`. */
+  courier: string
+  /** Tipe layanan — cocokkan dengan `RateResult.service`. */
+  service: string
+  /** ID idempotency dari sistem consumer (mis. nomor invoice). */
+  referenceId?: string
+  note?: string
+  cashOnDelivery?: {
+    amount: number
+  }
+}
+
+/** Status pengiriman ternormalisasi lintas provider. */
+export type ShipmentStatus = 'confirmed' | 'pickup' | 'in_transit' | 'delivered' | 'cancelled' | 'unknown'
 
 export interface ShipmentResult {
   provider: string
-  awb: string
+  /** ID order di sistem provider. */
+  orderId: string
+  awb?: string
+  trackingId?: string
   service: string
+  /** Status mentah dari provider. */
   status: string
+  /** Status ternormalisasi lintas provider. */
+  normalizedStatus?: ShipmentStatus
   cost: number
   currency: string
   estimatedDelivery?: string
