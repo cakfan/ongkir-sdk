@@ -8,16 +8,16 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** monorepo siap, contract stabil, resolver wilayah jalan.
 
-- [ ] Setup monorepo (Bun workspaces) + `tsconfig.base.json`, lint/format config
-- [ ] Setup Changesets untuk versioning independen
-- [ ] `@ongkir-sdk/core`: definisikan `types.ts` (`RateRequest`, `RateResult`, `TrackingResult`, `WebhookEvent`, `RegionRef`)
-- [ ] `@ongkir-sdk/core`: definisikan `contract.ts` (interface `ShippingProvider`)
-- [ ] `@ongkir-sdk/core`: `errors.ts` (`ShippingSDKError`, `ShippingErrorCode` enum, `isRetryable()`, `isShippingSDKError()`)
-- [ ] `@ongkir-sdk/core`: region resolver — HTTP client ke `api-wilayah-indonesia` + in-memory cache dengan TTL
-- [ ] `@ongkir-sdk/core/testing`: `runProviderContractTests()` — shared contract test suite
-- [ ] Deploy instance `api-wilayah-indonesia` (pilih hosting, isi `.env`, jalankan `bun run build-data`)
-- [ ] CI dasar: lint, typecheck, test di GitHub Actions
-- [ ] `README.md` root — overview monorepo + disclaimer unofficial
+- [x] Setup monorepo (Bun workspaces) + `tsconfig.base.json`, lint/format config
+- [x] Setup Changesets untuk versioning independen
+- [x] `@ongkir-sdk/core`: definisikan `types.ts` (`RateRequest`, `RateResult`, `TrackingResult`, `WebhookEvent`, `RegionRef`)
+- [x] `@ongkir-sdk/core`: definisikan `contract.ts` (interface `ShippingProvider`)
+- [x] `@ongkir-sdk/core`: `errors.ts` (`ShippingSDKError`, `ShippingErrorCode` enum, `isRetryable()`, `isShippingSDKError()`)
+- [x] `@ongkir-sdk/core`: region resolver — HTTP client ke `api-wilayah-indonesia` + in-memory cache dengan TTL
+- [x] `@ongkir-sdk/core/testing`: `runProviderContractTests()` — shared contract test suite
+- [x] Deploy instance `api-wilayah-indonesia` (pilih hosting, isi `.env`, jalankan `bun run build-data`) — Vercel, dokumentasi di `docs/deployment.md`
+- [x] CI dasar: lint, typecheck, test di GitHub Actions
+- [x] `README.md` root — overview monorepo + disclaimer unofficial
 
 **Exit criteria:** `@ongkir-sdk/core` bisa di-import, contract test suite jalan (walau belum ada provider), resolver wilayah bisa resolve nama kota → `RegionRef`.
 
@@ -27,16 +27,16 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** provider pertama lengkap read-only (rate, tracking, webhook).
 
-- [ ] `@ongkir-sdk/biteship`: setup package, dependency ke core
-- [ ] `mapper.ts`: `RateRequest` (core) → format request Biteship, response Biteship → `RateResult[]`
-- [ ] `mapper.ts`: `toBiteshipAreaId(RegionRef)` — mapping wilayah ke area_id Biteship
-- [ ] `adapter.ts`: implementasi `getRates()`
-- [ ] `adapter.ts`: implementasi `trackShipment()`
-- [ ] `adapter.ts`: implementasi `parseWebhook()` + verifikasi signature (kalau Biteship sediakan)
-- [ ] `errors.ts`: map error/status code Biteship → `ShippingErrorCode`
-- [ ] Fixture response asli Biteship di `__fixtures__/` (sandbox atau dari dokumentasi)
-- [ ] Unit test mapper + jalankan `runProviderContractTests()` untuk `BiteshipProvider`
-- [ ] `README.md` package `biteship`
+- [x] `@ongkir-sdk/biteship`: setup package, dependency ke core
+- [x] `mapper.ts`: `RateRequest` (core) → format request Biteship, response Biteship → `RateResult[]`
+- [x] `mapper.ts`: `toBiteshipAreaId(RegionRef)` — stub; rate check pakai postal code (tanpa area_id)
+- [x] `adapter.ts`: implementasi `getRates()`
+- [x] `adapter.ts`: implementasi `trackShipment()`
+- [x] `adapter.ts`: implementasi `parseWebhook()` + verifikasi signature (Biteship tidak sediakan signature → di-skip, `supportsSignatureVerification: false` di contract test)
+- [x] `errors.ts`: map error/status code Biteship → `ShippingErrorCode`
+- [x] Fixture response asli Biteship di `__fixtures__/` (dari dokumentasi)
+- [x] Unit test mapper + jalankan `runProviderContractTests()` untuk `BiteshipProvider`
+- [x] `README.md` package `biteship`
 
 **Exit criteria:** `BiteshipProvider` lulus semua contract test, bisa dipakai end-to-end di example project dengan API key sandbox.
 
