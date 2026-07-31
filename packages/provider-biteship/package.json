@@ -1,6 +1,6 @@
 {
   "name": "@ongkir-sdk/biteship",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Unofficial Biteship adapter for ongkir-sdk. Not affiliated with Biteship.",
   "license": "MIT",
   "type": "module",
@@ -21,6 +21,9 @@
   },
   "sideEffects": false,
   "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --dts --clean",
     "typecheck": "tsc --noEmit",
