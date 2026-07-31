@@ -1,5 +1,11 @@
 # @ongkir-sdk/core
 
+## 1.0.1
+
+### Patch Changes
+
+- 383b753: docs: tambah README package core (halaman npm sebelumnya kosong)
+
 ## 1.0.0
 
 ### Major Changes

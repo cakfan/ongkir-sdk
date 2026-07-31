@@ -1,6 +1,6 @@
 {
   "name": "@ongkir-sdk/core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core types, contract, errors, and testing utilities for ongkir-sdk",
   "license": "MIT",
   "repository": {
