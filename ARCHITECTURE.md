@@ -213,7 +213,11 @@ Alasan: lebih dekat ke bentuk cart ecommerce (banyak SKU beda berat/dimensi), da
 
 - Build per package pakai `tsup` → output `dist/` dengan `.js` (ESM), `.cjs` (CJS), `.d.ts`.
 - `package.json` tiap package: `"exports"` field dual ESM/CJS, `"sideEffects": false` buat tree-shaking.
-- Release lewat Changesets: `bunx changeset` saat PR berisi perubahan yang perlu rilis → `bunx changeset version` → `bunx changeset publish` di CI setelah merge ke `main`.
+- Versioning lewat Changesets (independen per package): `bunx changeset` saat PR berisi perubahan yang perlu rilis → `bunx changeset version` (bump versi + CHANGELOG) → commit ke `main`.
+- Dep internal antar package memakai **range versi** (`"@ongkir-sdk/core": "^1.0.0"`), bukan `workspace:*`. Bun workspace tetap resolve ke package lokal selama versi cocok, dan manifest yang ter-publish valid untuk `npm install`.
+- **Publish otomatis dari GitHub Actions** (`.github/workflows/release.yml`, trigger push ke `main`) memakai **Trusted Publishing (OIDC)** npm — tanpa token tersimpan. Prasyarat: npm CLI ≥11.5.1, runner GitHub-hosted, `id-token: write`, field `repository` di tiap `package.json`, dan konfigurasi trusted publisher per package di npmjs.com (workflow filename `release.yml`). Provenance attestation digenerate otomatis oleh npm.
+- Workflow: lint → typecheck → test → build → `npm publish --provenance --access public` per package (urutan `core` → `biteship` → `komerce` → `hono`), melewati package yang versinya sudah ada di registry.
+- Jangan publish langsung dari mesin lokal — publish hanya via CI agar identity & provenance konsisten.
 
 ## 8. Runtime compatibility
 

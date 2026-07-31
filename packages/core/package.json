@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Core types, contract, errors, and testing utilities for ongkir-sdk",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cakfan/ongkir-sdk.git"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

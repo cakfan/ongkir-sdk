@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Unofficial Biteship adapter for ongkir-sdk. Not affiliated with Biteship.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cakfan/ongkir-sdk.git"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -31,7 +35,7 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "@ongkir-sdk/core": "workspace:*"
+    "@ongkir-sdk/core": "^1.0.0"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",
