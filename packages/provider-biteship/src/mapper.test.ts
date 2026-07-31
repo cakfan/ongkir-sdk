@@ -131,6 +131,19 @@ describe('toBiteshipCreateOrderRequest', () => {
     expect(result.items[0]).toMatchObject({ value: 0, quantity: 1 })
   })
 
+  it('should omit postal_code when value is not numeric', () => {
+    const result = toBiteshipCreateOrderRequest({
+      origin: { name: 'A', phone: '1', address: 'addr', postalCode: 'abc' },
+      destination: { name: 'B', phone: '2', address: 'addr', postalCode: '' },
+      items: [{ name: 'Item', weightGrams: 500 }],
+      courier: 'jne',
+      service: 'reg',
+    })
+
+    expect(result.origin.postal_code).toBeUndefined()
+    expect(result.destination.postal_code).toBeUndefined()
+  })
+
   it('should include cash on delivery when provided', () => {
     const result = toBiteshipCreateOrderRequest({
       origin: { name: 'A', phone: '1', address: 'addr' },

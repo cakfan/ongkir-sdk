@@ -165,6 +165,12 @@ function getPostalCode(ref: RegionRef | { postalCode: string }): number | undefi
   return undefined
 }
 
+function toPostalCode(value?: string): number | undefined {
+  if (!value) return undefined
+  const parsed = Number(value)
+  return Number.isNaN(parsed) ? undefined : parsed
+}
+
 function toBiteshipItem(item: RateItem): BiteshipItem {
   return {
     name: 'Item',
@@ -220,20 +226,23 @@ function getAdditionalServices(p: BiteshipPricing): RateResult['additionalServic
 }
 
 export function toBiteshipCreateOrderRequest(request: CreateShipmentRequest): BiteshipCreateOrderRequest {
+  const originPostal = toPostalCode(request.origin.postalCode)
+  const destinationPostal = toPostalCode(request.destination.postalCode)
+
   return {
     origin: {
       contact_name: request.origin.name,
       contact_phone: request.origin.phone,
       contact_email: request.origin.email,
       address: request.origin.address,
-      ...(request.origin.postalCode ? { postal_code: Number(request.origin.postalCode) } : {}),
+      ...(originPostal !== undefined ? { postal_code: originPostal } : {}),
     },
     destination: {
       contact_name: request.destination.name,
       contact_phone: request.destination.phone,
       contact_email: request.destination.email,
       address: request.destination.address,
-      ...(request.destination.postalCode ? { postal_code: Number(request.destination.postalCode) } : {}),
+      ...(destinationPostal !== undefined ? { postal_code: destinationPostal } : {}),
       ...(request.cashOnDelivery ? { cash_on_delivery: { amount: request.cashOnDelivery.amount } } : {}),
     },
     courier: {
