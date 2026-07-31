@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "path": "/v3/pricing/domestic",
+    "http_status_code": 200,
+    "http_status": "OK",
+    "timestamp": 1634791012
+  },
+  "data": {
+    "origin": {
+      "area_id": 4711,
+      "area_name": "Kebon Kelapa"
+    },
+    "destination": {
+      "area_id": 4892,
+      "area_name": "Cideng"
+    },
+    "pricings": [
+      {
+        "logistic": {
+          "id": 2,
+          "name": "JNE",
+          "code": "JNE",
+          "company_name": "PT Tiki Jalur Nugraha Ekakurir"
+        },
+        "rate": {
+          "id": 58,
+          "name": "REG",
+          "type": "Regular",
+          "description": "Regular Package"
+        },
+        "weight": 1,
+        "volume": 1000,
+        "volume_weight": 0.167,
+        "final_weight": 1,
+        "min_day": 2,
+        "max_day": 3,
+        "unit_price": 9000,
+        "total_price": 9000,
+        "discount": 0,
+        "discount_value": 0,
+        "discounted_price": 9000,
+        "insurance_fee": 100,
+        "must_use_insurance": false,
+        "liability_value": 40000,
+        "final_price": 9000,
+        "currency": "IDR",
+        "insurance_applied": false
+      },
+      {
+        "logistic": {
+          "id": 5,
+          "name": "SiCepat",
+          "code": "SCP",
+          "company_name": "PT SiCepat Ekspres Indonesia"
+        },
+        "rate": {
+          "id": 365,
+          "name": "Regular",
+          "type": "Regular",
+          "description": "Regular"
+        },
+        "weight": 1,
+        "min_day": 1,
+        "max_day": 2,
+        "unit_price": 11000,
+        "total_price": 11000,
+        "discount": 0,
+        "discount_value": 0,
+        "discounted_price": 11000,
+        "insurance_fee": 500,
+        "must_use_insurance": true,
+        "liability_value": 2000000,
+        "final_price": 11500,
+        "currency": "IDR",
+        "insurance_applied": true
+      }
+    ]
+  },
+  "pagination": {
+    "current_page": 1,
+    "current_elements": 2,
+    "total_pages": 1,
+    "total_elements": 2
+  }
+}

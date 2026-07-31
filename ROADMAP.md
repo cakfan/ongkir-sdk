@@ -102,10 +102,19 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** ekspansi ekosistem.
 
-- [ ] Evaluasi provider berikutnya (Shipper, KiriminAja) — cek ketersediaan API publik dan ToS-nya (ulangi proses due-diligence seperti Biteship/Komerce)
-- [ ] `@ongkir-sdk/shipper` dan/atau `@ongkir-sdk/kiriminaja`
-- [ ] Rate caching helper opsional: `@ongkir-sdk/cache-memory`, `@ongkir-sdk/cache-redis` — wrap provider dengan cache layer tanpa ubah contract
+- [x] Evaluasi provider berikutnya (Shipper, KiriminAja) — cek ketersediaan API publik dan ToS-nya (ulangi proses due-diligence seperti Biteship/Komerce)
+- [x] `@ongkir-sdk/shipper` (selesai 2026-08); `@ongkir-sdk/kiriminaja` tetap opsional
+- [x] Rate caching helper opsional: `@ongkir-sdk/cache-memory` (selesai 2026-08); `@ongkir-sdk/cache-redis` belum dibuat (butuh dependency redis client non Web-standard, pola sama — lihat ARCHITECTURE §11)
 - [ ] Evaluasi kebutuhan docs site (VitePress/Starlight) kalau traction sudah cukup — lihat diskusi dokumentasi di PRD
+
+**Hasil due-diligence Shipper (dari logistics-docs.shipper.id):**
+- API publik tersedia (logistics v3), auth via header `X-API-Key`, base URL production `https://merchant-api.shipper.id`, sandbox `https://merchant-api-sandbox.shipper.id`. Tidak ditemukan field "affiliate/partnership" yang mengharuskan endorsement — tetap pakai disclaimer unofficial.
+- Alur wajib: `GET /v3/location?adm_level=5&keyword=` untuk resolve `area_id` (level kelurahan, keyword min 3 karakter, cocokkan dengan `postcode`/`postcodes`) → `POST /v3/pricing/domestic` (wajib `area_id` origin/destination, `for_order: true`, `length`/`width`/`height`/`weight` (kg)/`item_value`) → `POST /v3/order` (butuh `rate_id` hasil pricing) → `GET /v3/order/{id}` untuk detail + AWB + status tracking.
+- Webhook: tersedia, payload memuat `order_id`, `tracking_id`, `awb`, `external_status` (code/name/description), `status_date`. **Tidak ada signature verification** — endpoint harus stateless & open (didokumentasikan di dashboard). Konsekuensi desain: `supportsSignatureVerification: false` (kayak Biteship), keamanan idempotency serahkan ke consumer.
+- `createShipment`: contract core hanya bawa `courier` + `service`, tapi Shipper butuh `rate_id` → adapter resolve `rate_id` secara **internal** (re-query pricing, cari `logistic.code`==courier && `rate.name`==service). Keputusan ini **tidak** mengubah `contract.ts` (confirmed 2026-08).
+- Status mapping ke `ShipmentStatus`: code 1000-1044 → confirmed/pickup, 1050-1190 → in_transit, 2000/2010/3000 → delivered, 999 → cancelled, sisanya → unknown.
+
+**Exit criteria:** `ShipperProvider` lulus semua contract test (`runProviderContractTests`) termasuk `createShipment` (re-query pricing → `POST /v3/order`), `@ongkir-sdk/cache-memory` bisa membungkus provider mana pun dan `getRates()` cache hit tanpa panggil provider ulang. KiriminAja & docs site tetap opsional/later.
 
 ---
 

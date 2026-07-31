@@ -3,7 +3,7 @@
   "private": true,
   "workspaces": ["packages/*", "examples/*"],
   "scripts": {
-    "build": "bun run --filter @ongkir-sdk/core build && bun run --filter @ongkir-sdk/biteship build && bun run --filter @ongkir-sdk/komerce build && bun run --filter @ongkir-sdk/hono build",
+    "build": "bun run --filter @ongkir-sdk/core build && bun run --filter @ongkir-sdk/biteship build && bun run --filter @ongkir-sdk/komerce build && bun run --filter @ongkir-sdk/shipper build && bun run --filter @ongkir-sdk/cache-memory build && bun run --filter @ongkir-sdk/hono build",
     "lint": "biome check .",
     "format": "biome format --write .",
     "typecheck": "bun run --filter './packages/*' typecheck",

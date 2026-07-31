@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "path": "/v3/location?adm_level=5&keyword=10110",
+    "http_status_code": 200,
+    "http_status": "OK",
+    "timestamp": 1622192522
+  },
+  "data": [
+    {
+      "adm_level_5": {
+        "id": 4711,
+        "level": 5,
+        "type": "area",
+        "name": "Kebon Kelapa",
+        "postcode": "10110"
+      },
+      "adm_level_cur": {
+        "id": 4711,
+        "level": 5,
+        "type": "area",
+        "name": "Kebon Kelapa",
+        "postcode": "10110"
+      },
+      "display_txt": "10110, Kebon Kelapa, Gambir, Jakarta Pusat, DKI Jakarta, INDONESIA",
+      "postcodes": ["10110"]
+    },
+    {
+      "adm_level_5": {
+        "id": 4892,
+        "level": 5,
+        "type": "area",
+        "name": "Cideng",
+        "postcode": "40111"
+      },
+      "adm_level_cur": {
+        "id": 4892,
+        "level": 5,
+        "type": "area",
+        "name": "Cideng",
+        "postcode": "40111"
+      },
+      "display_txt": "40111, Cideng, ...",
+      "postcodes": ["40111"]
+    },
+    {
+      "adm_level_5": {
+        "id": 4871,
+        "level": 5,
+        "type": "area",
+        "name": "Menteng",
+        "postcode": "12440"
+      },
+      "adm_level_cur": {
+        "id": 4871,
+        "level": 5,
+        "type": "area",
+        "name": "Menteng",
+        "postcode": "12440"
+      },
+      "display_txt": "12440, Menteng, ...",
+      "postcodes": ["12440"]
+    },
+    {
+      "adm_level_5": {
+        "id": 4872,
+        "level": 5,
+        "type": "area",
+        "name": "Setiabudi",
+        "postcode": "12240"
+      },
+      "adm_level_cur": {
+        "id": 4872,
+        "level": 5,
+        "type": "area",
+        "name": "Setiabudi",
+        "postcode": "12240"
+      },
+      "display_txt": "12240, Setiabudi, ...",
+      "postcodes": ["12240"]
+    }
+  ]
+}

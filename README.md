@@ -8,8 +8,10 @@
 | Package | Description | Status |
 |---|---|---|
 | `@ongkir-sdk/core` | Types, contract, errors, shared contract test suite | ✅ v1 |
-| `@ongkir-sdk/biteship` | Biteship adapter (rates, tracking, webhook) | ✅ v1 |
+| `@ongkir-sdk/biteship` | Biteship adapter (rates, tracking, webhook, shipment) | ✅ v1 |
 | `@ongkir-sdk/komerce` | Komerce (RajaOngkir) adapter (rates, tracking) | ✅ v1 |
+| `@ongkir-sdk/shipper` | Shipper adapter (rates, tracking, webhook, shipment) | ✅ v1 |
+| `@ongkir-sdk/cache-memory` | In-memory cache wrapper around any provider (rates only) | ✅ v1 |
 | `@ongkir-sdk/hono` | Hono middleware — expose providers as REST routes | ✅ v1 |
 
 ## Quick start
@@ -57,7 +59,7 @@ app.route('/', createShippingRoutes({
 
 ## Status
 
-v1 (Fase 0–3) selesai: core + 2 provider + Hono middleware, read-only. Fase 4 (v2) selesai: `createShipment` aktif — Biteship membuat order sungguhan (`POST /v1/orders`), Komerce melempar `CREATE_SHIPMENT_NOT_SUPPORTED` (batasan tier Shipping Cost), Hono punya route `POST /shipments`. Lihat [ROADMAP.md](./ROADMAP.md).
+v1 (Fase 0–3) selesai: core + 3 provider + Hono middleware, read-only. Fase 4 (v2) selesai: `createShipment` aktif — Biteship membuat order sungguhan (`POST /v1/orders`), Shipper membuat order sungguhan (`POST /v3/order`, `rate_id` di-resolve ulang dari pricing), Komerce melempar `CREATE_SHIPMENT_NOT_SUPPORTED` (batasan tier Shipping Cost), Hono punya route `POST /shipments`. Fase 5 selesai: paket `@ongkir-sdk/cache-memory` tersedia sebagai wrapper caching opsional. Lihat [ROADMAP.md](./ROADMAP.md).
 
 ## License
 

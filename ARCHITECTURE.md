@@ -31,6 +31,11 @@ ongkir-sdk/
 │   ├── provider-komerce/        @ongkir-sdk/komerce
 │   │   └── (struktur sama seperti biteship)
 │   │
+│   ├── provider-shipper/        @ongkir-sdk/shipper
+│   │   └── (struktur sama seperti biteship)
+│   │
+│   ├── cache-memory/            @ongkir-sdk/cache-memory (wrapper, bukan adapter)
+│   │
 │   └── hono/                    @ongkir-sdk/hono
 │       ├── src/
 │       │   ├── middleware.ts    createShippingRoutes(provider) → Hono app
@@ -56,12 +61,14 @@ consumer app
    ▼
 @ongkir-sdk/biteship  ──┐
 @ongkir-sdk/komerce   ──┼──► implements ──► @ongkir-sdk/core (contract, types, errors)
-@ongkir-sdk/hono       ─┘         ▲
-                                   │
-                          @ongkir-sdk/core/region
-                                   │
-                                   ▼
-                     api-wilayah-indonesia (HTTP, self-hosted)
+@ongkir-sdk/shipper   ──┤                      ▲
+@ongkir-sdk/hono      ──┘                      │
+@ongkir-sdk/cache-memory ──► wraps ShippingProvider apa pun (juga implementasi ShippingProvider)
+                                               │
+                                   @ongkir-sdk/core/region
+                                               │
+                                               ▼
+                                  api-wilayah-indonesia (HTTP, self-hosted)
 ```
 
 - Provider package **bergantung ke core**, tidak sebaliknya. Core tidak pernah import dari provider package mana pun — ini yang menjaga adapter pattern tetap bersih.
@@ -190,6 +197,7 @@ interface RegionRef {
 - Tiap provider adapter punya fungsi privat `toBiteshipAreaId(region: RegionRef)` / `toKomerceCode(region: RegionRef)` — mapping ini **bukan tanggung jawab core**. Catatan implementasi per provider:
   - Biteship: mapping statis area id masih stub; rate check berjalan via postal code langsung.
   - RajaOngkir (Komerce): tidak punya tabel ID statis yang bisa di-bundle, jadi `toKomerceCode` menjadi **lookup dinamis** ke endpoint pencarian destination (search by postal code), hasilnya di-cache in-memory per instance adapter. Konsekuensi: `getRates()` Komerce butuh `postalCode` di `RegionRef`.
+  - Shipper: sama seperti Komerce — pricing API butuh `area_id` (level kelurahan) yang di-resolve dari **postal code** via `GET /v3/location?adm_level=5&keyword=<postal>` (keyword minimal 3 karakter). Lookup di-cache in-memory per instance (`Map<postalCode, areaId>`). Konsekuensi: `getRates()`/`createShipment()` Shipper butuh `postalCode` di `RegionRef`/`ShipmentContact`, didokumentasikan di README package.
 - `trackShipment(trackingId, options?: TrackShipmentOptions)` — parameter opsional `options.courier` untuk provider yang API tracking-nya butuh kode kurir (RajaOngkir wajib, Biteship mengabaikan). Kalau wajib tapi tidak diberikan, adapter melempar `ShippingSDKError` dengan pesan jelas.
 - Resolver bisa di-cache oleh consumer (in-memory Map sederhana) karena data wilayah jarang berubah — SDK menyediakan opsi `cache: Map | 'memory' | false` di config resolver, default in-memory dengan TTL panjang (misal 24 jam).
 
@@ -281,8 +289,22 @@ Catatan per provider:
 
 - **Biteship**: `POST /v1/orders`. Butuh saldo cukup; error `400020xx` di-map ke `CREATE_SHIPMENT_FAILED` (reference-id duplikat juga di sini, biar consumer bisa pakai `referenceId` sebagai idempotency key).
 - **Komerce (RajaOngkir Shipping Cost tier)**: create-order **tidak tersedia** di tier ini — endpoint Store Order hanya ada di produk terpisah "API Shipping Delivery" (base URL `api.collaborator.komerce.id`, header `x-api-key`, akun/tier berbeda). `createShipment()` melempar `CREATE_SHIPMENT_NOT_SUPPORTED`, konsisten dengan perilaku `parseWebhook()` yang juga `WEBHOOK_NOT_SUPPORTED`.
+- **Shipper**: `POST /v3/order`. Contract core hanya membawa `courier` + `service`, sedangkan API Shipper butuh `rate_id` hasil pricing. Resolusi `rate_id` dilakukan **internal**: `createShipment()` memanggil ulang `POST /v3/pricing/domestic` dengan payload yang sama seperti `getRates()` (area_id di-resolve ulang dari postal code, hasil pricing di-cache per instance supaya re-query tidak mahal), cari rate yang `logistic.code` cocok dengan `courier` dan `rate.name` cocok dengan `service`, lalu pakai `rate.id`. Tidak ada perubahan `contract.ts` (no new field `rateId`). `referenceId` diteruskan sebagai `external_id` (idempotency key). Error create-order di-map ke `CREATE_SHIPMENT_FAILED`; rate tidak ketemu setelah re-query → `RATE_NOT_AVAILABLE`.
 - Error apa pun dari create-order dinormalisasi ke `ShippingSDKError` sebelum keluar dari adapter.
 
-## 11. Status
+## 11. Caching wrapper
 
-Semua keputusan arsitektur di dokumen ini final untuk v1; section §10 adalah keputusan untuk v2 (Fase 4). Detail implementasi (edge case per provider) boleh muncul saat coding, tapi tidak mengubah contract publik tanpa update dokumen ini dulu.
+`@ongkir-sdk/cache-memory` adalah package terpisah (bukan adapter provider) yang **membungkus** `ShippingProvider` apa pun dengan cache in-memory, tetap mengimplementasikan `ShippingProvider` sehingga bisa dipakai di tempat yang sama (termasuk `@ongkir-sdk/hono`):
+
+```ts
+new MemoryCacheProvider({ provider, ttlMs?: number })
+```
+
+- **Hanya `getRates()` yang di-cache** (read-only, deterministik per input). `trackShipment()`, `parseWebhook()`, dan `createShipment()` (side-effect nyata) selalu diteruskan ke provider asli tanpa cache.
+- Cache key dihitung dari request yang dinormalisasi (origin/destination/items), supaya object input berbeda tapi bermakna sama tetap `cache hit`.
+- TTL default 5 menit (opsi `ttlMs`, angka dalam ms); `0` mematikan cache.
+- Ini **menambah dependency baru ke `package.json`** (`@ongkir-sdk/cache-memory`). `@ongkir-sdk/cache-redis` belum dibuat — di-skip karena butuh dependency eksternal (redis client) yang bukan Web-standard; kalau dibutuhkan nanti, pola yang sama.
+
+## 12. Status
+
+Semua keputusan arsitektur di dokumen ini final untuk v1; section §10 adalah keputusan untuk v2 (Fase 4); section §6/§10/§11 adalah keputusan Fase 5 (provider Shipper + cache-memory). Detail implementasi (edge case per provider) boleh muncul saat coding, tapi tidak mengubah contract publik tanpa update dokumen ini dulu.

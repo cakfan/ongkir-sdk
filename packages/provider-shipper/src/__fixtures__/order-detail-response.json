@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "path": "/v3/order/215VKK6KQYEX2",
+    "http_status_code": 200,
+    "http_status": "OK",
+    "timestamp": 1622192522
+  },
+  "data": {
+    "consignee": {
+      "name": "Penerima",
+      "phone_number": "62852280038095"
+    },
+    "consigner": {
+      "name": "Pengirim",
+      "phone_number": "62852280038095"
+    },
+    "origin": {
+      "address": "Jalan Kenangan",
+      "postcode": "12940",
+      "area_id": 4711,
+      "area_name": "Karet Kuningan"
+    },
+    "destination": {
+      "address": "Jalan Kenangan",
+      "postcode": "12940",
+      "area_id": 4711,
+      "area_name": "Karet Kuningan"
+    },
+    "external_id": "KRN123111",
+    "order_id": "215VKK6KQYEX2",
+    "courier": {
+      "rate_id": 4,
+      "amount": 108000,
+      "use_insurance": true,
+      "insurance_amount": 7880,
+      "cod": false,
+      "min_day": 1,
+      "max_day": 2
+    },
+    "package": {
+      "weight": 1.1231,
+      "length": 30,
+      "width": 40,
+      "height": 60,
+      "volume_weight": 12,
+      "package_type": 2,
+      "items": [
+        {
+          "id": 717898,
+          "name": "Baju Baju",
+          "price": 120000,
+          "qty": 12
+        }
+      ]
+    },
+    "payment_type": "postpay",
+    "awb_number": "010116222971811",
+    "creation_date": "2021-05-28T08:16:21Z",
+    "last_updated_date": "2021-05-28T08:16:33Z",
+    "trackings": [
+      {
+        "shipper_status": {
+          "code": 1000,
+          "name": "Paket sedang dipersiapkan",
+          "description": "Paket sedang dipersiapkan"
+        },
+        "logistic_status": {
+          "code": 1,
+          "name": "Order Masuk ke sistem",
+          "description": "Data order sudah masuk ke sistem"
+        },
+        "created_date": "2021-05-28T08:16:21Z"
+      },
+      {
+        "shipper_status": {
+          "code": 1180,
+          "name": "Paket Dalam Perjalanan Bersama [3PL]",
+          "description": "Order Dalam Perjalanan dengan [3PL]"
+        },
+        "logistic_status": {
+          "code": 5,
+          "name": "Paket sedang dikirim",
+          "description": "Paket sedang dikirim"
+        },
+        "created_date": "2021-05-28T10:30:00Z"
+      },
+      {
+        "shipper_status": {
+          "code": 2000,
+          "name": "Paket Terkirim",
+          "description": "Paket sudah diterima oleh [receiver_name]"
+        },
+        "logistic_status": {
+          "code": 10,
+          "name": "Delivered",
+          "description": "Paket telah diterima"
+        },
+        "created_date": "2021-05-29T08:00:00Z"
+      }
+    ],
+    "is_active": true,
+    "is_hubless": false,
+    "shipment_status": {
+      "name": "Paket Terkirim",
+      "description": "Paket sudah diterima oleh [receiver_name]",
+      "code": 2000,
+      "updated_by": "SHIPPER_FRONTAPIMERCHANTSVC",
+      "updated_date": "2022-11-18T04:05:44Z",
+      "track_url": "",
+      "reason": "",
+      "created_date": "2022-11-18T04:05:44Z"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "path": "/v3/order",
+    "http_status_code": 201,
+    "http_status": "Created",
+    "timestamp": 1622132155
+  },
+  "data": {
+    "coverage": "domestic",
+    "order_id": "215MX47DYNRV5",
+    "payment_type": "postpay",
+    "courier": {
+      "rate_id": 58,
+      "amount": 9000,
+      "use_insurance": false,
+      "insurance_amount": 0,
+      "cod": false
+    },
+    "consignee": {
+      "name": "Budi",
+      "phone_number": "6281298765432"
+    },
+    "consigner": {
+      "name": "Toko Sumber",
+      "phone_number": "6281234567890"
+    },
+    "destination": {
+      "address": "Jl. Merdeka No. 2",
+      "area_id": 4872,
+      "area_name": "Setiabudi",
+      "postcode": "12240"
+    },
+    "origin": {
+      "address": "Jl. Raya Sudirman No. 1",
+      "area_id": 4871,
+      "area_name": "Menteng",
+      "postcode": "12440"
+    },
+    "package": {
+      "package_type": 2,
+      "weight": 1,
+      "length": 1,
+      "width": 1,
+      "height": 1,
+      "price": 50000,
+      "items": [
+        {
+          "id": 717898,
+          "name": "Kaos Polos",
+          "qty": 1,
+          "price": 50000
+        }
+      ]
+    }
+  }
+}

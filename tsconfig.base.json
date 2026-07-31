@@ -9,6 +9,8 @@
       "@ongkir-sdk/core/testing": ["packages/core/src/testing/index.ts"],
       "@ongkir-sdk/biteship": ["packages/provider-biteship/src/index.ts"],
       "@ongkir-sdk/komerce": ["packages/provider-komerce/src/index.ts"],
+      "@ongkir-sdk/shipper": ["packages/provider-shipper/src/index.ts"],
+      "@ongkir-sdk/cache-memory": ["packages/cache-memory/src/index.ts"],
       "@ongkir-sdk/hono": ["packages/hono/src/index.ts"]
     },
     "lib": ["ES2022", "DOM"],
