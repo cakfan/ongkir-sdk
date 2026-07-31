@@ -60,6 +60,8 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Exit criteria:** Dua provider lulus contract test yang sama tanpa modifikasi core. Kalau butuh modifikasi core, berarti Fase 0 desainnya kurang generic — catat sebagai pelajaran sebelum lanjut.
 
+**Hasil validasi live (RajaOngkir by Komerce):** `getRates` 12440 → 12240 (1 kg) return **50 opsi rate** (wahana, sicepat, tiki, pos, rex, ninja, dll) tanpa bug mapping. Error path terverifikasi: AWB palsu → `TRACKING_NOT_FOUND` ("Invalid Awb"), `trackShipment` tanpa courier → `UNKNOWN` + `providerErrorCode: MISSING_COURIER` dengan pesan yang menuntun pemakai. Example `node-basic` sekarang dual-provider (`PROVIDER=biteship|komerce`).
+
 ---
 
 ## Fase 3 — Hono adapter

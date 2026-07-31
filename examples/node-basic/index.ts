@@ -1,13 +1,35 @@
 import { BiteshipProvider } from '@ongkir-sdk/biteship'
-import { isShippingSDKError } from '@ongkir-sdk/core'
+import { type ShippingProvider, isShippingSDKError } from '@ongkir-sdk/core'
+import { KomerceProvider } from '@ongkir-sdk/komerce'
 
-const apiKey = process.env.BITESHIP_API_KEY
-if (!apiKey) {
-  console.error('BITESHIP_API_KEY belum diset. Pakai sandbox key (biteship_test.*) dari dashboard Biteship.')
+const providerName = process.env.PROVIDER ?? 'biteship'
+const apiKeyConfig: Record<string, { env: string; hint: string }> = {
+  biteship: {
+    env: 'BITESHIP_API_KEY',
+    hint: 'Pakai sandbox key (biteship_test.*) dari dashboard Biteship.',
+  },
+  komerce: {
+    env: 'RAJAONGKIR_API_KEY',
+    hint: 'Pakai key dari dashboard rajaongkir.com (RajaOngkir by Komerce).',
+  },
+}
+
+const config = apiKeyConfig[providerName]
+if (!config) {
+  console.error(`PROVIDER tidak dikenal: "${providerName}" (pilih "biteship" atau "komerce")`)
   process.exit(1)
 }
 
-const provider = new BiteshipProvider({ apiKey })
+const apiKey = process.env[config.env]
+if (!apiKey) {
+  console.error(`${config.env} belum diset. ${config.hint}`)
+  process.exit(1)
+}
+
+const provider: ShippingProvider =
+  providerName === 'komerce' ? new KomerceProvider({ apiKey }) : new BiteshipProvider({ apiKey })
+
+console.log(`Pakai provider: ${providerName}`)
 
 async function checkRates() {
   console.log('\n=== getRates ===')
@@ -18,7 +40,7 @@ async function checkRates() {
   })
 
   console.log(`Dapat ${rates.length} opsi rate:`)
-  for (const r of rates.slice(0, 5)) {
+  for (const r of rates.slice(0, 10)) {
     const durasi = r.estimatedDaysMin
       ? `${r.estimatedDaysMin}${r.estimatedDaysMax && r.estimatedDaysMax !== r.estimatedDaysMin ? `-${r.estimatedDaysMax}` : ''} hari`
       : '?'
@@ -28,7 +50,8 @@ async function checkRates() {
 
 async function checkTracking(trackingId: string) {
   console.log('\n=== trackShipment ===')
-  const result = await provider.trackShipment(trackingId)
+  const courier = process.argv[3]
+  const result = await provider.trackShipment(trackingId, courier ? { courier } : undefined)
   console.log(`Status: ${result.status}`)
   console.log(`Riwayat: ${result.statusHistory.length} entri`)
   for (const h of result.statusHistory.slice(-3)) {
@@ -59,7 +82,9 @@ async function main() {
       }
     }
   } else {
-    console.log('\n(Skip tracking — kasih tracking ID sebagai argumen: bun run index.ts <trackingId>)')
+    console.log(
+      '\n(Skip tracking — kasih tracking ID sebagai argumen: bun run index.ts <trackingId> [courier] — courier wajib untuk komerce, misal jne)',
+    )
   }
 }
 

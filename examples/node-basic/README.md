@@ -1,18 +1,23 @@
 # example-node-basic
 
-Contoh pemakaian `@ongkir-sdk/biteship` untuk validasi manual end-to-end (butuh API key sandbox asli).
+Contoh pemakaian SDK untuk validasi manual end-to-end dengan dua provider (butuh API key asli). Script ini memakai provider berdasarkan env `PROVIDER`.
 
 ## Cara jalan
 
 ```bash
-# 1. Set API key sandbox Biteship (biteship_test.*) dari dashboard Testing Mode
+# Provider Biteship (sandbox key biteship_test.* dari dashboard Testing Mode)
+export PROVIDER=biteship
 export BITESHIP_API_KEY=biteship_test.xxxxx
 
-# 2. Cek rates (postal code Jakarta Selatan → Jakarta Selatan)
+# Provider Komerce (RajaOngkir by Komerce, key dari rajaongkir.com)
+export PROVIDER=komerce
+export RAJAONGKIR_API_KEY=xxxxxxxx
+
+# Cek rates (postal code Jakarta Selatan → Jakarta Selatan)
 bun run start
 
-# 3. Cek tracking (opsional, butuh tracking ID dari order sandbox)
-bun run start <trackingId>
+# Cek tracking (opsional; courier wajib untuk komerce, misal jne)
+bun run start <trackingId> [courier]
 ```
 
-> Script ini **tidak** dijalankan di CI — butuh API key asli. Test yang jalan di CI memakai mock client (`packages/provider-biteship/src/adapter.test.ts`).
+> Script ini **tidak** dijalankan di CI — butuh API key asli. Test yang jalan di CI memakai mock client (`packages/provider-*/src/adapter.test.ts`).
