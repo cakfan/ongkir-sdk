@@ -1,2 +1,2 @@
-// Komerce provider — placeholder for Fase 2
-export {}
+export { KomerceProvider } from './adapter'
+export type { KomerceProviderConfig } from './adapter'

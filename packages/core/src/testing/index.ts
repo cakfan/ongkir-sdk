@@ -6,6 +6,7 @@ export interface ContractTestConfig {
   createProvider: () => ShippingProvider
   validTrackingId: string
   supportsSignatureVerification?: boolean
+  supportsWebhooks?: boolean
 }
 
 export function runProviderContractTests(config: ContractTestConfig) {
@@ -58,7 +59,7 @@ export function runProviderContractTests(config: ContractTestConfig) {
 
     describe('trackShipment', () => {
       it('should return TrackingResult for valid tracking ID', async () => {
-        const result = await provider.trackShipment(config.validTrackingId)
+        const result = await provider.trackShipment(config.validTrackingId, { courier: 'jne' })
 
         expect(typeof result.provider).toBe('string')
         expect(typeof result.trackingId).toBe('string')
@@ -77,7 +78,9 @@ export function runProviderContractTests(config: ContractTestConfig) {
     })
 
     describe('parseWebhook', () => {
-      it('should return WebhookEvent for valid payload', () => {
+      const webhookTest = config.supportsWebhooks !== false ? it : it.skip
+
+      webhookTest('should return WebhookEvent for valid payload', () => {
         const event = provider.parseWebhook(
           { id: 'evt_1', status: 'delivered' },
           new Headers({ 'content-type': 'application/json' }),

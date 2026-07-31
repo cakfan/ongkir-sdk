@@ -1,7 +1,7 @@
 {
   "name": "@ongkir-sdk/komerce",
   "version": "0.1.0",
-  "description": "Unofficial Komerce (RajaOngkir) adapter for ongkir-sdk. Not affiliated with Komerce or RajaOngkir.",
+  "description": "Unofficial RajaOngkir (by Komerce) adapter for ongkir-sdk. Not affiliated with Komerce.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -9,8 +9,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" }
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     }
   },
   "sideEffects": false,
@@ -25,6 +31,7 @@
     "@ongkir-sdk/core": "workspace:*"
   },
   "devDependencies": {
+    "@types/bun": "^1.3.14",
     "tsup": "^8.3.0",
     "typescript": "^5.7.0"
   }

@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "message": "Success Tracking AWB",
+    "code": 200,
+    "status": "success"
+  },
+  "data": {
+    "delivered": false,
+    "summary": {
+      "courier_code": "jne",
+      "courier_name": "JNE",
+      "waybill_number": "JNE001234567890",
+      "service_code": "REG",
+      "waybill_date": "2026-07-20",
+      "shipper_name": "Toko Contoh",
+      "receiver_name": "Budi Santoso",
+      "origin": "KOTA JAKARTA PUSAT",
+      "destination": "KOTA BANDUNG",
+      "status": "DELIVERED"
+    },
+    "details": {
+      "waybill_number": "JNE001234567890",
+      "waybill_date": "2026-07-20",
+      "waybill_time": "14:32:00",
+      "weight": "1000",
+      "origin": "JAKARTA PUSAT",
+      "destination": "BANDUNG",
+      "shipper_name": "Toko Contoh",
+      "shipper_address1": "Jl. Contoh No. 1",
+      "shipper_address2": "Gambir",
+      "shipper_city": "JAKARTA PUSAT",
+      "receiver_name": "Budi Santoso",
+      "receiver_address1": "Jl. Dago No. 2",
+      "receiver_city": "BANDUNG"
+    },
+    "delivery_status": {
+      "status": "DELIVERED",
+      "pod_receiver": "BUDI SANTOSO",
+      "pod_date": "2026-07-22",
+      "pod_time": "11:05:00"
+    },
+    "manifest": [
+      {
+        "manifest_code": "BK",
+        "manifest_description": "Paket diterima kurir di lokasi pengirim",
+        "manifest_date": "2026-07-20",
+        "manifest_time": "15:10:00",
+        "city_name": "JAKARTA PUSAT"
+      },
+      {
+        "manifest_code": "PK",
+        "manifest_description": "Paket telah diantar ke alamat tujuan",
+        "manifest_date": "2026-07-22",
+        "manifest_time": "11:04:00",
+        "city_name": "BANDUNG"
+      },
+      {
+        "manifest_code": "DL",
+        "manifest_description": "Paket telah diterima penerima",
+        "manifest_date": "2026-07-22",
+        "manifest_time": "11:05:00",
+        "city_name": "BANDUNG"
+      }
+    ]
+  }
+}

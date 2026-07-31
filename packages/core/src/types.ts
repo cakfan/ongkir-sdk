@@ -36,6 +36,11 @@ export interface RateResult {
   }>
 }
 
+export interface TrackShipmentOptions {
+  /** Courier code required by providers whose tracking API needs it (e.g. RajaOngkir). Ignored by others. */
+  courier?: string
+}
+
 export interface TrackingResult {
   provider: string
   trackingId: string

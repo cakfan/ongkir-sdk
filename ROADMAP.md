@@ -46,14 +46,17 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** provider kedua, validasi bahwa contract benar-benar provider-agnostic.
 
-- [ ] `@ongkir-sdk/komerce`: setup package
-- [ ] `mapper.ts` + `toKomerceCode(RegionRef)`
-- [ ] `adapter.ts`: `getRates()`, `trackShipment()`
-- [ ] `parseWebhook()` — cek dulu apakah tier akun yang ditarget support webhook; kalau tidak, dokumentasikan keterbatasannya jelas di README
-- [ ] `errors.ts`: map error Komerce → `ShippingErrorCode`
-- [ ] Fixture + unit test + `runProviderContractTests()` untuk `KomerceProvider`
-- [ ] **Cross-check**: apakah ada field/behaviour di Biteship adapter yang ternyata provider-specific dan bocor ke core? Refactor contract kalau perlu (ini fase paling penting untuk validasi desain core).
-- [ ] `README.md` package `komerce`
+- [x] `@ongkir-sdk/komerce`: setup package
+- [x] `mapper.ts` + `toKomerceCode(RegionRef)`
+- [x] `adapter.ts`: `getRates()`, `trackShipment()`
+- [x] `parseWebhook()` — tier Shipping Cost (target v1, termasuk Starter gratis) tidak support webhook; webhook cuma ada di API Shipping Delivery (Enterprise). `parseWebhook()` throw `WEBHOOK_NOT_SUPPORTED`, keterbatasan didokumentasikan di README package
+- [x] `errors.ts`: map error Komerce → `ShippingErrorCode`
+- [x] Fixture + unit test + `runProviderContractTests()` untuk `KomerceProvider`
+- [x] **Cross-check**: 
+  - `trackShipment(trackingId)` → ditambah `options?: { courier?: string }` karena RajaOngkir butuh kode kurir (Biteship tidak). Backward-compatible, Biteship mengabaikan option.
+  - Region mapping: RajaOngkir tidak punya ID statis yang bisa di-bundle → `toKomerceCode` jadi lookup dinamis via endpoint search (postal code, di-cache). Berarti adapter butuh postal code di `RegionRef` — keterbatasan ini dicatat di README, bukan bocor ke core.
+  - `RateResult.provider` di Komerce = kode kurir (`jne`), konsisten dengan makna "courier identity" di Biteship. Tidak ada field provider-specific yang bocor ke core.
+- [x] `README.md` package `komerce`
 
 **Exit criteria:** Dua provider lulus contract test yang sama tanpa modifikasi core. Kalau butuh modifikasi core, berarti Fase 0 desainnya kurang generic — catat sebagai pelajaran sebelum lanjut.
 

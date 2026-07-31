@@ -91,6 +91,7 @@ type ShippingErrorCode =
   | 'PROVIDER_RATE_LIMITED'
   | 'PROVIDER_UNAVAILABLE'
   | 'WEBHOOK_SIGNATURE_INVALID'
+  | 'WEBHOOK_NOT_SUPPORTED'
   | 'UNKNOWN'
 ```
 
@@ -144,6 +145,7 @@ parseWebhook(payload: unknown, headers: Headers): WebhookEvent
 ```
 
 - Tiap provider adapter tanggung jawab verifikasi signature (kalau providernya sediakan) sebelum parse payload.
+- Provider yang **tidak** menyediakan webhook di tier akun yang ditarget harus tetap mengimplementasikan `parseWebhook`, tapi melempar `ShippingSDKError` dengan code `WEBHOOK_NOT_SUPPORTED` dan mendokumentasikan keterbatasannya di README package. Contract test suite punya flag `supportsWebhooks` untuk skip test webhook pada provider seperti ini.
 - Hasil dinormalisasi ke:
 
 ```ts
@@ -180,7 +182,10 @@ interface RegionRef {
 ```
 
 - Default implementation: HTTP client ke instance `api-wilayah-indonesia`.
-- Tiap provider adapter punya fungsi privat `toBiteshipAreaId(region: RegionRef)` / `toKomerceCode(region: RegionRef)` — mapping ini **statis per provider**, bukan tanggung jawab core.
+- Tiap provider adapter punya fungsi privat `toBiteshipAreaId(region: RegionRef)` / `toKomerceCode(region: RegionRef)` — mapping ini **bukan tanggung jawab core**. Catatan implementasi per provider:
+  - Biteship: mapping statis area id masih stub; rate check berjalan via postal code langsung.
+  - RajaOngkir (Komerce): tidak punya tabel ID statis yang bisa di-bundle, jadi `toKomerceCode` menjadi **lookup dinamis** ke endpoint pencarian destination (search by postal code), hasilnya di-cache in-memory per instance adapter. Konsekuensi: `getRates()` Komerce butuh `postalCode` di `RegionRef`.
+- `trackShipment(trackingId, options?: TrackShipmentOptions)` — parameter opsional `options.courier` untuk provider yang API tracking-nya butuh kode kurir (RajaOngkir wajib, Biteship mengabaikan). Kalau wajib tapi tidak diberikan, adapter melempar `ShippingSDKError` dengan pesan jelas.
 - Resolver bisa di-cache oleh consumer (in-memory Map sederhana) karena data wilayah jarang berubah — SDK menyediakan opsi `cache: Map | 'memory' | false` di config resolver, default in-memory dengan TTL panjang (misal 24 jam).
 
 ### 6.1 Struktur `RateRequest`

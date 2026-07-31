@@ -12,6 +12,7 @@ export type {
   RateResult,
   RegionRef,
   ShipmentResult,
+  TrackShipmentOptions,
   TrackingResult,
   WebhookEvent,
 } from './types'

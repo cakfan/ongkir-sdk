@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "message": "Success Get Domestic Destinations",
+    "code": 200,
+    "status": "success"
+  },
+  "data": [
+    {
+      "id": 66914,
+      "label": "JAKARTA PUSAT, GAMBIR, GAMBIR - 10110",
+      "province_name": "DKI JAKARTA",
+      "city_name": "JAKARTA PUSAT",
+      "district_name": "GAMBIR",
+      "subdistrict_name": "GAMBIR",
+      "zip_code": "10110"
+    },
+    {
+      "id": 66915,
+      "label": "JAKARTA PUSAT, GAMBIR, KEBON KELAPA - 10110",
+      "province_name": "DKI JAKARTA",
+      "city_name": "JAKARTA PUSAT",
+      "district_name": "GAMBIR",
+      "subdistrict_name": "KEBON KELAPA",
+      "zip_code": "10110"
+    },
+    {
+      "id": 66916,
+      "label": "JAKARTA PUSAT, GAMBIR, PETOJO UTARA - 10110",
+      "province_name": "DKI JAKARTA",
+      "city_name": "JAKARTA PUSAT",
+      "district_name": "GAMBIR",
+      "subdistrict_name": "PETOJO UTARA",
+      "zip_code": "10110"
+    }
+  ]
+}

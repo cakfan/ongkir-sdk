@@ -58,7 +58,7 @@ packages/
 ```ts
 interface ShippingProvider {
   getRates(params: RateRequest): Promise<RateResult[]>
-  trackShipment(trackingId: string): Promise<TrackingResult>
+  trackShipment(trackingId: string, options?: TrackShipmentOptions): Promise<TrackingResult> // options.courier untuk provider yang butuh kode kurir (RajaOngkir)
   parseWebhook(payload: unknown, headers: Headers): WebhookEvent
   // createShipment(params: CreateShipmentRequest): Promise<ShipmentResult> — v2
 }

@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "message": "Success Calculate Domestic Shipping cost",
+    "code": 200,
+    "status": "success"
+  },
+  "data": [
+    {
+      "name": "JNE",
+      "code": "jne",
+      "service": "REG",
+      "description": "JNE Reguler",
+      "cost": 20000,
+      "etd": "1-2"
+    },
+    {
+      "name": "JNE",
+      "code": "jne",
+      "service": "YES",
+      "description": "JNE YES",
+      "cost": 36000,
+      "etd": "1"
+    },
+    {
+      "name": "SiCepat",
+      "code": "sicepat",
+      "service": "BEST",
+      "description": "SiCepat Best",
+      "cost": 23000,
+      "etd": "1-2"
+    },
+    {
+      "name": "J&T Express",
+      "code": "jnt",
+      "service": "EZ",
+      "description": "J&T EZ",
+      "cost": 18000,
+      "etd": "2-3"
+    }
+  ]
+}
