@@ -57,7 +57,7 @@ app.route('/', createShippingRoutes({
 
 ## Status
 
-v1 (Fase 0–3) selesai: core + 2 provider + Hono middleware, semua read-only. `createShipment` masuk Fase 4 (v2). Lihat [ROADMAP.md](./ROADMAP.md).
+v1 (Fase 0–3) selesai: core + 2 provider + Hono middleware, read-only. Fase 4 (v2) selesai: `createShipment` aktif — Biteship membuat order sungguhan (`POST /v1/orders`), Komerce melempar `CREATE_SHIPMENT_NOT_SUPPORTED` (batasan tier Shipping Cost), Hono punya route `POST /shipments`. Lihat [ROADMAP.md](./ROADMAP.md).
 
 ## License
 
