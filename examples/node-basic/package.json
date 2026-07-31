@@ -1,0 +1,12 @@
+{
+  "name": "example-node-basic",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "@ongkir-sdk/biteship": "workspace:*",
+    "@ongkir-sdk/core": "workspace:*"
+  }
+}

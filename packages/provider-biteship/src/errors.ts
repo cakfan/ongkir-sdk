@@ -17,8 +17,6 @@ function getErrorCode(httpStatus: number, bodyCode?: string): string {
   }
 
   switch (httpStatus) {
-    case 400:
-      return 'INVALID_DESTINATION'
     case 401:
     case 403:
       return 'PROVIDER_AUTH_FAILED'
