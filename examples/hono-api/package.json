@@ -1,0 +1,15 @@
+{
+  "name": "example-hono-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts"
+  },
+  "dependencies": {
+    "@ongkir-sdk/biteship": "workspace:*",
+    "@ongkir-sdk/core": "workspace:*",
+    "@ongkir-sdk/hono": "workspace:*",
+    "@ongkir-sdk/komerce": "workspace:*",
+    "hono": "^4"
+  }
+}

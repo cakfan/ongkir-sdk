@@ -220,6 +220,23 @@ Alasan: lebih dekat ke bentuk cart ecommerce (banyak SKU beda berat/dimensi), da
 - Core dan provider package **tidak boleh** pakai API spesifik Node (`fs`, `crypto` Node-only) — pakai Web-standard API (`fetch`, `crypto.subtle`) supaya jalan di Cloudflare Workers/Deno/Bun/Node ≥18 tanpa polyfill.
 - `@ongkir-sdk/hono` boleh assume runtime yang Hono dukung (semuanya di atas juga kompatibel).
 
-## 9. Status
+## 9. Hono middleware (REST contract)
+
+`@ongkir-sdk/hono` menyediakan `createShippingRoutes()` yang mengubah satu atau lebih `ShippingProvider` menjadi Hono sub-app:
+
+```ts
+createShippingRoutes({
+  providers: Record<string, ShippingProvider>, // key = slug di URL, misal 'biteship' | 'komerce'
+  defaultProvider?: string,                    // dipakai /rates & /track/:id; wajib kalau mount > 1
+})
+```
+
+- `GET /rates` — query params `origin`, `destination` (postal code), `weight` (gram), dimensi/`quantity`/`value` opsional, divalidasi `zod`. Satu request = satu item. Response `RateResult[]`.
+- `GET /track/:id` — query param opsional `courier` diteruskan ke `trackShipment(id, { courier })`.
+- `POST /webhooks/:provider` — memilih adapter dari map sesuai param URL, lalu `parseWebhook(payload, headers)`.
+- `ShippingSDKError` → JSON `{ error: { code, message, provider, providerErrorCode, retryable } }` dengan status HTTP: 401 (auth/signature), 404 (tracking tidak ditemukan / provider tidak terdaftar), 422 (region invalid / rate tidak tersedia), 429 (rate limit), 501 (`WEBHOOK_NOT_SUPPORTED`), 502 (provider unavailable), 500 (unknown). Error validasi → 400 `VALIDATION_ERROR`.
+- `hono` & `zod` adalah peerDependencies (menghindari duplicate instance kalau consumer sudah punya hono).
+
+## 10. Status
 
 Semua keputusan arsitektur di dokumen ini final untuk v1. Detail implementasi (edge case per provider) boleh muncul saat coding, tapi tidak mengubah contract publik tanpa update dokumen ini dulu.

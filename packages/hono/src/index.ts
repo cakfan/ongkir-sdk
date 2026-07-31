@@ -1,2 +1,2 @@
-// Hono adapter — placeholder for Fase 3
-export {}
+export { createShippingRoutes } from './middleware'
+export type { ShippingRoutesOptions } from './middleware'

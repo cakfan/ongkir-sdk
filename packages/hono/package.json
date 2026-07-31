@@ -1,7 +1,7 @@
 {
   "name": "@ongkir-sdk/hono",
   "version": "0.1.0",
-  "description": "Hono middleware adapter for ongkir-sdk",
+  "description": "Hono middleware for ongkir-sdk — expose shipping providers as REST routes",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -24,9 +24,15 @@
   "dependencies": {
     "@ongkir-sdk/core": "workspace:*"
   },
+  "peerDependencies": {
+    "hono": ">=4",
+    "zod": ">=3"
+  },
   "devDependencies": {
     "@types/bun": "^1.3.14",
+    "hono": "^4",
     "tsup": "^8.3.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "zod": "^4"
   }
 }

@@ -68,14 +68,16 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 
 **Tujuan:** siap dipakai langsung sebagai REST endpoint di project Hono (termasuk dogfooding di boilerplate/Ichimart kalau relevan).
 
-- [ ] `@ongkir-sdk/hono`: setup package, dependency ke core saja (provider-agnostic)
-- [ ] `middleware.ts`: `createShippingRoutes(provider: ShippingProvider)` → Hono sub-app dengan route `GET /rates`, `GET /track/:id`, `POST /webhooks/:provider`
-- [ ] Validasi request pakai `zod` di layer route
-- [ ] OpenAPI spec otomatis (opsional, kalau pakai `@hono/zod-openapi`)
-- [ ] Example project `examples/hono-api` — server minimal yang pasang `BiteshipProvider` + route
-- [ ] `README.md` package `hono`
+- [x] `@ongkir-sdk/hono`: setup package, dependency ke core saja (provider-agnostic)
+- [x] `middleware.ts`: `createShippingRoutes({ providers, defaultProvider })` → Hono sub-app dengan route `GET /rates`, `GET /track/:id`, `POST /webhooks/:provider`
+- [x] Validasi request pakai `zod` di layer route
+- [ ] OpenAPI spec otomatis (opsional, kalau pakai `@hono/zod-openapi`) — di-skip untuk v1; revisit kalau docs site jadi
+- [x] Example project `examples/hono-api` — server minimal yang mount `BiteshipProvider` + `KomerceProvider`, ganti provider lewat `DEFAULT_PROVIDER`
+- [x] `README.md` package `hono`
 
 **Exit criteria:** `bunx` example project jalan, bisa hit `/rates` dan dapat response ternormalisasi dari Biteship maupun Komerce dengan cara ganti satu baris config.
+
+**Hasil validasi live:** `examples/hono-api` jalan dengan `DEFAULT_PROVIDER=komerce` (port env-configurable). `GET /rates` (12440→12240, 1kg) return `RateResult[]` nyata dari API RajaOngkir. Error path terverifikasi lewat REST: `/track` AWB palsu → `TRACKING_NOT_FOUND` (404), tanpa courier → `UNKNOWN` + `MISSING_COURIER`, `/webhooks/biteship` yang tidak terdaftar → `PROVIDER_NOT_FOUND` (404), `/webhooks/komerce` → `WEBHOOK_NOT_SUPPORTED` (501). Catatan: `bun run` auto-serve saat default export adalah Hono app — jangan panggil `serve()` manual di dalam modul yang sama (double listen → EADDRINUSE).
 
 ---
 
