@@ -58,6 +58,7 @@ app.route('/', createShippingRoutes({
 }))
 // GET /rates?origin=12440&destination=12240&weight=1000
 // GET /track/:id?courier=jne
+// POST /shipments   (CreateShipmentRequest — side-effect nyata, berpotensi menagih saldo)
 // POST /webhooks/:provider
 ```
 

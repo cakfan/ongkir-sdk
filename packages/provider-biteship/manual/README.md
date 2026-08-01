@@ -4,7 +4,7 @@ Test pakai API key asli. Tidak dijalankan oleh CI (`bun test`/`bun run test` men
 
 ## Prasyarat
 
-- `.env` di root repo berisi `BITSHIP_KEY=<key>`.
+- `.env` di root repo berisi `BITESHIP_API_KEY=<key>`.
 - `dist/` package `@ongkir-sdk/core` dan `@ongkir-sdk/biteship` sudah di-build (`bun run build`).
 
 ## Cara menjalankan

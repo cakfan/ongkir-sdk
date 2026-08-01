@@ -1,22 +1,30 @@
 import { BiteshipProvider } from '@ongkir-sdk/biteship'
 import { type ShippingProvider, isShippingSDKError } from '@ongkir-sdk/core'
 import { KomerceProvider } from '@ongkir-sdk/komerce'
+import { ShipperProvider } from '@ongkir-sdk/shipper'
 
 const providerName = process.env.PROVIDER ?? 'biteship'
-const apiKeyConfig: Record<string, { env: string; hint: string }> = {
+const apiKeyConfig: Record<string, { env: string; hint: string; create: (apiKey: string) => ShippingProvider }> = {
   biteship: {
     env: 'BITESHIP_API_KEY',
     hint: 'Pakai sandbox key (biteship_test.*) dari dashboard Biteship.',
+    create: (apiKey) => new BiteshipProvider({ apiKey }),
   },
   komerce: {
     env: 'RAJAONGKIR_API_KEY',
     hint: 'Pakai key dari dashboard rajaongkir.com (RajaOngkir by Komerce).',
+    create: (apiKey) => new KomerceProvider({ apiKey }),
+  },
+  shipper: {
+    env: 'SHIPPER_API_KEY',
+    hint: 'Pakai key dari dashboard Shipper (opsional SHIPPER_BASE_URL untuk sandbox).',
+    create: (apiKey) => new ShipperProvider({ apiKey, baseUrl: process.env.SHIPPER_BASE_URL }),
   },
 }
 
 const config = apiKeyConfig[providerName]
 if (!config) {
-  console.error(`PROVIDER tidak dikenal: "${providerName}" (pilih "biteship" atau "komerce")`)
+  console.error(`PROVIDER tidak dikenal: "${providerName}" (pilih "biteship", "komerce", atau "shipper")`)
   process.exit(1)
 }
 
@@ -26,8 +34,7 @@ if (!apiKey) {
   process.exit(1)
 }
 
-const provider: ShippingProvider =
-  providerName === 'komerce' ? new KomerceProvider({ apiKey }) : new BiteshipProvider({ apiKey })
+const provider = config.create(apiKey)
 
 console.log(`Pakai provider: ${providerName}`)
 

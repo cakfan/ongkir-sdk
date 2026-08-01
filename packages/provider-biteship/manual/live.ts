@@ -1,9 +1,9 @@
 import { BiteshipProvider } from '@ongkir-sdk/biteship'
 import { ShippingSDKError } from '@ongkir-sdk/core'
 
-const apiKey = process.env.BITSHIP_KEY
+const apiKey = process.env.BITESHIP_API_KEY
 if (!apiKey) {
-  console.error('Missing BITSHIP_KEY in .env')
+  console.error('Missing BITESHIP_API_KEY in .env')
   process.exit(1)
 }
 

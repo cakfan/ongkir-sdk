@@ -8,6 +8,7 @@
   "dependencies": {
     "@ongkir-sdk/biteship": "workspace:*",
     "@ongkir-sdk/komerce": "workspace:*",
+    "@ongkir-sdk/shipper": "workspace:*",
     "@ongkir-sdk/core": "workspace:*"
   }
 }

@@ -2,6 +2,7 @@ import { BiteshipProvider } from '@ongkir-sdk/biteship'
 import type { ShippingProvider } from '@ongkir-sdk/core'
 import { createShippingRoutes } from '@ongkir-sdk/hono'
 import { KomerceProvider } from '@ongkir-sdk/komerce'
+import { ShipperProvider } from '@ongkir-sdk/shipper'
 import { Hono } from 'hono'
 
 const providers: Record<string, ShippingProvider> = {}
@@ -12,10 +13,16 @@ if (process.env.BITESHIP_API_KEY) {
 if (process.env.RAJAONGKIR_API_KEY) {
   providers.komerce = new KomerceProvider({ apiKey: process.env.RAJAONGKIR_API_KEY })
 }
+if (process.env.SHIPPER_API_KEY) {
+  providers.shipper = new ShipperProvider({
+    apiKey: process.env.SHIPPER_API_KEY,
+    baseUrl: process.env.SHIPPER_BASE_URL,
+  })
+}
 
 const providerNames = Object.keys(providers)
 if (providerNames.length === 0) {
-  console.error('Set minimal satu API key: BITESHIP_API_KEY atau RAJAONGKIR_API_KEY')
+  console.error('Set minimal satu API key: BITESHIP_API_KEY, RAJAONGKIR_API_KEY, atau SHIPPER_API_KEY')
   process.exit(1)
 }
 

@@ -10,6 +10,8 @@
     "@ongkir-sdk/core": "workspace:*",
     "@ongkir-sdk/hono": "workspace:*",
     "@ongkir-sdk/komerce": "workspace:*",
-    "hono": "^4"
+    "@ongkir-sdk/shipper": "workspace:*",
+    "hono": "^4",
+    "zod": "^4"
   }
 }
