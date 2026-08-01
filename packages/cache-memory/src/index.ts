@@ -67,7 +67,7 @@ export class MemoryCacheProvider implements ShippingProvider {
     return this.inner.createShipment(params)
   }
 
-  /** Menghapus isi cache. Dipanggil otomatis saat TTL lewat; boleh dipanggil manual. */
+  /** Menghapus seluruh isi cache secara manual. Entri yang TTL-nya lewat diabaikan saat dibaca ulang. */
   clear(): void {
     this.cache.clear()
   }

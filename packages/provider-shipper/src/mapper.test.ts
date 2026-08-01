@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 import {
+  findMatchingRate,
   findRateId,
   getPostalCode,
   toCoreRateResults,
@@ -151,6 +152,11 @@ describe('mapper', () => {
     it('returns undefined when no rate matches', () => {
       expect(findRateId(response, 'jne', 'oke')).toBeUndefined()
     })
+
+    it('findMatchingRate returns the full pricing item', () => {
+      expect(findMatchingRate(response, 'scp', 'regular')).toMatchObject({ rate: { id: 365 } })
+      expect(findMatchingRate(response, 'scp', 'nope')).toBeUndefined()
+    })
   })
 
   describe('toShipperCreateOrderRequest', () => {
@@ -164,7 +170,7 @@ describe('mapper', () => {
         referenceId: 'INV-001',
       }
 
-      const body = toShipperCreateOrderRequest(request, 4871, 4872, 58)
+      const body = toShipperCreateOrderRequest(request, 4871, 4872, 58, false)
 
       expect(body.consigner).toEqual({ name: 'Toko Sumber', phone_number: '6281234567890' })
       expect(body.consignee).toEqual({ name: 'Budi', phone_number: '6281298765432' })
@@ -184,7 +190,7 @@ describe('mapper', () => {
       expect(body.payment_type).toBe('postpay')
     })
 
-    it('sets cod true and omits external_id when absent', () => {
+    it('sets cod true with cod_amount and omits external_id when absent', () => {
       const body = toShipperCreateOrderRequest(
         {
           origin: { name: 'A', phone: '0811', address: 'addr1', postalCode: '12440' },
@@ -197,9 +203,24 @@ describe('mapper', () => {
         4871,
         4872,
         58,
+        false,
       )
       expect(body.courier.cod).toBe(true)
+      expect(body.courier.cod_amount).toBe(50000)
       expect('external_id' in body).toBe(false)
+    })
+
+    it('reflects useInsurance in the courier payload', () => {
+      const request = {
+        origin: { name: 'A', phone: '0811', address: 'addr1', postalCode: '12440' },
+        destination: { name: 'B', phone: '0822', address: 'addr2', postalCode: '12240' },
+        items: [{ name: 'Item', weightGrams: 500, value: 2_000_000 }],
+        courier: 'scp',
+        service: 'regular',
+      }
+
+      expect(toShipperCreateOrderRequest(request, 4871, 4872, 365, true).courier.use_insurance).toBe(true)
+      expect(toShipperCreateOrderRequest(request, 4871, 4872, 58, false).courier.use_insurance).toBe(false)
     })
   })
 

@@ -240,6 +240,60 @@ describe('ShipperProvider', () => {
         expect((err as ShippingSDKError).code).toBe('RATE_NOT_AVAILABLE')
       }
     })
+
+    it('should send cod_amount when cashOnDelivery is provided', async () => {
+      let orderBody: Record<string, unknown> | undefined
+      const baseClient = createMockClient()
+      const capturingClient: NonNullable<ShipperProviderConfig['httpClient']> = async (
+        url: string,
+        init?: RequestInit,
+      ) => {
+        if (url.includes('/v3/order') && init?.method === 'POST') {
+          orderBody = JSON.parse(init.body as string) as Record<string, unknown>
+        }
+        return baseClient(url, init)
+      }
+
+      const provider = new ShipperProvider({ apiKey: 'test_key', httpClient: capturingClient })
+
+      await provider.createShipment({
+        origin: { name: 'Toko Sumber', phone: '081234567890', address: 'Jl. Raya Sudirman No. 1', postalCode: '12440' },
+        destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2', postalCode: '12240' },
+        items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 50000, quantity: 1 }],
+        courier: 'jne',
+        service: 'reg',
+        cashOnDelivery: { amount: 250000 },
+      })
+
+      expect((orderBody?.courier as Record<string, unknown>).cod).toBe(true)
+      expect((orderBody?.courier as Record<string, unknown>).cod_amount).toBe(250000)
+    })
+
+    it('should set use_insurance true when the matched rate requires it', async () => {
+      let orderBody: Record<string, unknown> | undefined
+      const baseClient = createMockClient()
+      const capturingClient: NonNullable<ShipperProviderConfig['httpClient']> = async (
+        url: string,
+        init?: RequestInit,
+      ) => {
+        if (url.includes('/v3/order') && init?.method === 'POST') {
+          orderBody = JSON.parse(init.body as string) as Record<string, unknown>
+        }
+        return baseClient(url, init)
+      }
+
+      const provider = new ShipperProvider({ apiKey: 'test_key', httpClient: capturingClient })
+
+      await provider.createShipment({
+        origin: { name: 'Toko Sumber', phone: '081234567890', address: 'Jl. Raya Sudirman No. 1', postalCode: '12440' },
+        destination: { name: 'Budi', phone: '081298765432', address: 'Jl. Merdeka No. 2', postalCode: '12240' },
+        items: [{ name: 'Kaos Polos', weightGrams: 1000, value: 2_000_000, quantity: 1 }],
+        courier: 'scp',
+        service: 'regular',
+      })
+
+      expect((orderBody?.courier as Record<string, unknown>).use_insurance).toBe(true)
+    })
   })
 })
 

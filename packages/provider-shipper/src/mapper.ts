@@ -144,6 +144,8 @@ export interface ShipperCreateOrderRequest {
   }
   courier: {
     cod: boolean
+    /** Nilai COD yang ditagihkan ke penerima. Wajib agar order benar-benar dianggap COD. */
+    cod_amount?: number
     rate_id: number
     use_insurance: boolean
   }
@@ -259,13 +261,14 @@ export function toShipperPricingRequest(
   request: RateRequest,
   originAreaId: number,
   destinationAreaId: number,
+  options?: { cod?: boolean },
 ): Record<string, unknown> {
   const pkg = aggregatePackage(request.items)
   const origin = toAreaRef(request.origin, originAreaId)
   const destination = toAreaRef(request.destination, destinationAreaId)
 
   return {
-    cod: false,
+    cod: options?.cod ?? false,
     destination,
     for_order: true,
     height: pkg.heightCm,
@@ -310,14 +313,21 @@ export function toCoreRateResults(response: ShipperPricingResponse): RateResult[
   })
 }
 
-export function findRateId(response: ShipperPricingResponse, courier: string, service: string): number | undefined {
+export function findMatchingRate(
+  response: ShipperPricingResponse,
+  courier: string,
+  service: string,
+): ShipperPricingItem | undefined {
   const pricings = response.data?.pricings ?? []
-  const match = pricings.find(
+  return pricings.find(
     (item) =>
       (item.logistic?.code ?? '').toLowerCase() === courier.toLowerCase() &&
       (item.rate?.name ?? '').toLowerCase() === service.toLowerCase(),
   )
-  return match?.rate?.id
+}
+
+export function findRateId(response: ShipperPricingResponse, courier: string, service: string): number | undefined {
+  return findMatchingRate(response, courier, service)?.rate?.id
 }
 
 export function toShipperCreateOrderRequest(
@@ -325,6 +335,7 @@ export function toShipperCreateOrderRequest(
   originAreaId: number,
   destinationAreaId: number,
   rateId: number,
+  useInsurance: boolean,
 ): ShipperCreateOrderRequest {
   const pkg = aggregatePackage(request.items)
   const items = request.items.map((item) => ({
@@ -332,6 +343,15 @@ export function toShipperCreateOrderRequest(
     price: item.value ?? 0,
     qty: item.quantity ?? 1,
   }))
+
+  const courier: ShipperCreateOrderRequest['courier'] = {
+    cod: Boolean(request.cashOnDelivery),
+    rate_id: rateId,
+    use_insurance: useInsurance,
+  }
+  if (request.cashOnDelivery) {
+    courier.cod_amount = request.cashOnDelivery.amount
+  }
 
   return {
     consignee: {
@@ -342,11 +362,7 @@ export function toShipperCreateOrderRequest(
       name: request.origin.name,
       phone_number: normalizePhone(request.origin.phone),
     },
-    courier: {
-      cod: Boolean(request.cashOnDelivery),
-      rate_id: rateId,
-      use_insurance: false,
-    },
+    courier,
     coverage: 'domestic',
     destination: {
       address: request.destination.address,

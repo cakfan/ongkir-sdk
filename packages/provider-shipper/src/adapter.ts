@@ -10,7 +10,7 @@ import type {
 import { ShippingSDKError } from '@ongkir-sdk/core'
 import { handleShipperError } from './errors'
 import {
-  findRateId,
+  findMatchingRate,
   getPostalCode,
   toCoreRateResults,
   toCoreShipmentResult,
@@ -91,14 +91,8 @@ export class ShipperProvider implements ShippingProvider {
   }
 
   async createShipment(params: CreateShipmentRequest): Promise<ShipmentResult> {
-    const originAreaId = await this.resolveAreaId({ postalCode: params.origin.postalCode ?? '' }, 'origin')
-    const destinationAreaId = await this.resolveAreaId(
-      { postalCode: params.destination.postalCode ?? '' },
-      'destination',
-    )
-
-    const rateId = await this.resolveRateId(params)
-    if (rateId === undefined) {
+    const resolved = await this.resolveRateId(params)
+    if (resolved === undefined) {
       throw new ShippingSDKError({
         code: 'RATE_NOT_AVAILABLE',
         provider: 'shipper',
@@ -106,7 +100,13 @@ export class ShipperProvider implements ShippingProvider {
       })
     }
 
-    const body = toShipperCreateOrderRequest(params, originAreaId, destinationAreaId, rateId)
+    const body = toShipperCreateOrderRequest(
+      params,
+      await this.resolveAreaId({ postalCode: params.origin.postalCode ?? '' }, 'origin'),
+      await this.resolveAreaId({ postalCode: params.destination.postalCode ?? '' }, 'destination'),
+      resolved.rateId,
+      resolved.useInsurance,
+    )
 
     const response = await this.httpClient(`${this.baseUrl}/v3/order`, {
       method: 'POST',
@@ -153,20 +153,7 @@ export class ShipperProvider implements ShippingProvider {
     )
 
     if (!response.ok) {
-      try {
-        await handleShipperError(response, 'shipper', side === 'origin' ? 'INVALID_ORIGIN' : 'INVALID_DESTINATION')
-      } catch (err) {
-        if (err instanceof ShippingSDKError && err.code === 'INVALID_DESTINATION') {
-          throw new ShippingSDKError({
-            code: side === 'origin' ? 'INVALID_ORIGIN' : 'INVALID_DESTINATION',
-            provider: 'shipper',
-            message: err.message,
-            providerErrorCode: err.providerErrorCode,
-            retryable: err.retryable,
-          })
-        }
-        throw err
-      }
+      await handleShipperError(response, 'shipper', side === 'origin' ? 'INVALID_ORIGIN' : 'INVALID_DESTINATION')
     }
 
     const data = (await response.json()) as ShipperLocationResponse
@@ -183,7 +170,9 @@ export class ShipperProvider implements ShippingProvider {
     return areaId
   }
 
-  private async resolveRateId(params: CreateShipmentRequest): Promise<number | undefined> {
+  private async resolveRateId(
+    params: CreateShipmentRequest,
+  ): Promise<{ rateId: number; useInsurance: boolean } | undefined> {
     const originPostal = params.origin.postalCode ?? ''
     const destinationPostal = params.destination.postalCode ?? ''
 
@@ -195,6 +184,7 @@ export class ShipperProvider implements ShippingProvider {
       },
       await this.resolveAreaId({ postalCode: originPostal }, 'origin'),
       await this.resolveAreaId({ postalCode: destinationPostal }, 'destination'),
+      { cod: Boolean(params.cashOnDelivery) },
     )
 
     const response = await this.httpClient(`${this.baseUrl}/v3/pricing/domestic`, {
@@ -211,6 +201,8 @@ export class ShipperProvider implements ShippingProvider {
     }
 
     const data = (await response.json()) as ShipperPricingResponse
-    return findRateId(data, params.courier, params.service)
+    const match = findMatchingRate(data, params.courier, params.service)
+    if (!match?.rate?.id) return undefined
+    return { rateId: match.rate.id, useInsurance: Boolean(match.must_use_insurance) }
   }
 }

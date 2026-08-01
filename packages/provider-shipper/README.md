@@ -64,6 +64,14 @@ const event = provider.parseWebhook(payload, headers)
 
 Shipper's create-order API requires a `rate_id` from the pricing response, but the ongkir-sdk contract only carries `courier` + `service`. The adapter calls `POST /v3/pricing/domestic` internally, finds the rate whose logistic code matches `courier` and rate name matches `service`, then passes its `rate.id` to `POST /v3/order`. No contract changes were needed.
 
+### COD
+
+When `cashOnDelivery` is provided, the pricing re-query runs with `cod: true` and the order body carries `courier.cod: true` plus `courier.cod_amount` (required by Shipper for the order to be treated as COD).
+
+### Insurance
+
+Shipper requires `use_insurance: true` when a rate's `must_use_insurance` is set (high-value items over the courier's threshold). The adapter reads that flag from the re-queried pricing response and sets `courier.use_insurance` accordingly — otherwise Shipper rejects the order.
+
 ## License
 
 MIT
