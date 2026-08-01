@@ -50,6 +50,8 @@ packages/
   core/                 → @ongkir-sdk/core (types, contract, error normalization)
   provider-biteship/    → @ongkir-sdk/biteship
   provider-komerce/     → @ongkir-sdk/komerce
+  provider-shipper/     → @ongkir-sdk/shipper
+  cache-memory/         → @ongkir-sdk/cache-memory (wrapper caching opsional)
   hono/                 → @ongkir-sdk/hono (optional middleware)
 ```
 
@@ -60,7 +62,7 @@ interface ShippingProvider {
   getRates(params: RateRequest): Promise<RateResult[]>
   trackShipment(trackingId: string, options?: TrackShipmentOptions): Promise<TrackingResult> // options.courier untuk provider yang butuh kode kurir (RajaOngkir)
   parseWebhook(payload: unknown, headers: Headers): WebhookEvent
-  // createShipment(params: CreateShipmentRequest): Promise<ShipmentResult> — v2
+  createShipment(params: CreateShipmentRequest): Promise<ShipmentResult> // v2 (Fase 4)
 }
 ```
 
@@ -83,12 +85,13 @@ Catatan implementasi:
 
 | Provider | Rate check | Tracking | Webhook | Create shipment |
 |---|---|---|---|---|
-| Biteship | ✅ (v1) | ✅ (v1) | ✅ (v1) | v2 |
-| Komerce (RajaOngkir) | ✅ (v1) | ✅ (v1) | Tergantung tier | v2 |
+| Biteship | ✅ (v1) | ✅ (v1) | ✅ (v1) | ✅ (v2) |
+| Komerce (RajaOngkir) | ✅ (v1) | ✅ (v1) | Tergantung tier | ❌ (tier Shipping Cost) |
+| Shipper | ✅ (v3) | ✅ (v3) | ✅ (v3) | ✅ (v3) |
 
 **v1 scope: read-only** — `getRates` + `trackShipment` + webhook parser. `createShipment` (buat pesanan/AWB aktual ke provider) digeser ke v2 supaya v1 bisa rilis lebih cepat dan teruji dulu di jalur yang lebih sederhana (tidak ada side-effect transaksional ke provider).
 
-Provider lain (Shipper, KiriminAja) masuk roadmap v3, bukan blocker v1/v2.
+Provider lain (KiriminAja) masuk roadmap v3 opsional; Shipper sudah selesai di Fase 5.
 
 ## 8. Tech stack
 
@@ -115,7 +118,7 @@ Provider lain (Shipper, KiriminAja) masuk roadmap v3, bukan blocker v1/v2.
 ## 11. Versioning strategy
 
 **Independent versioning per package**, dikelola pakai [Changesets](https://github.com/changesets/changesets):
-- `@ongkir-sdk/core`, `@ongkir-sdk/biteship`, `@ongkir-sdk/komerce`, `@ongkir-sdk/hono` masing-masing punya nomor versi sendiri.
+- `@ongkir-sdk/core`, `@ongkir-sdk/biteship`, `@ongkir-sdk/komerce`, `@ongkir-sdk/shipper`, `@ongkir-sdk/cache-memory`, `@ongkir-sdk/hono` masing-masing punya nomor versi sendiri.
 - Perubahan di satu adapter (misal Komerce ubah response format) tidak memaksa bump versi package lain.
 - Trade-off: butuh disiplin changelog per package, tapi lebih ramah untuk consumer yang cuma pakai sebagian provider.
 

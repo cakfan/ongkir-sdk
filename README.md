@@ -19,6 +19,7 @@
 ```ts
 import { BiteshipProvider } from '@ongkir-sdk/biteship'
 import { KomerceProvider } from '@ongkir-sdk/komerce'
+import { ShipperProvider } from '@ongkir-sdk/shipper'
 
 const provider = new KomerceProvider({ apiKey: process.env.RAJAONGKIR_API_KEY! })
 
@@ -31,7 +32,19 @@ const rates = await provider.getRates({
 const tracking = await provider.trackShipment('AWB001', { courier: 'jne' })
 ```
 
-Dua provider lulus contract test suite yang sama (`runProviderContractTests()` dari `@ongkir-sdk/core/testing`) — ganti provider tanpa ubah kode consumer.
+Provider Shipper memakai flow yang sama, tapi wajib `postalCode` di `origin`/`destination` (`area_id` di-resolve otomatis oleh adapter):
+
+```ts
+const shipper = new ShipperProvider({ apiKey: process.env.SHIPPER_API_KEY! })
+
+const shipperRates = await shipper.getRates({
+  origin: { postalCode: '10110' },
+  destination: { postalCode: '40111' },
+  items: [{ weightGrams: 1000, value: 50000, quantity: 1 }],
+})
+```
+
+Tiga provider lulus contract test suite yang sama (`runProviderContractTests()` dari `@ongkir-sdk/core/testing`) — ganti provider tanpa ubah kode consumer.
 
 ### REST (Hono)
 

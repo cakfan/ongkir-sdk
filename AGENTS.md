@@ -28,7 +28,7 @@ Ikuti urutan fase di `ROADMAP.md`. Jangan kerjakan task Fase 2+ sebelum exit cri
 
 - Provider adapter baru **wajib** lulus `runProviderContractTests()` dari `@ongkir-sdk/core/testing` sebelum dianggap selesai.
 - Unit test mapper (request/response transform) terpisah dari contract test.
-- **Tidak boleh** menambahkan test yang butuh API key asli/live call ke provider di suite yang jalan di CI. Kalau perlu integration test manual, taruh di folder terpisah yang jelas-jelas di-exclude dari CI (misal `*.manual.test.ts`) dan dokumentasikan cara jalankannya manual.
+- **Tidak boleh** menambahkan test yang butuh API key asli/live call ke provider di suite yang jalan di CI. Kalau perlu integration test manual, taruh di folder `manual/` package yang bersangkutan dengan nama file **bukan** berakhiran `.test.ts` (misal `manual/live.ts`) — `bun test` ikut men-scan glob `*.test.ts`, jadi akhiran `.manual.test.ts` pun tetap ketarik ke CI. Dokumentasikan cara jalankannya di `manual/README.md`.
 - Fixture response provider disimpan di `__fixtures__/`, bukan di-generate on-the-fly dari live call.
 
 ## 5. Legal & branding — hard rules

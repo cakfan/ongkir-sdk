@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for pkg in core provider-biteship provider-komerce hono; do
+          for pkg in core provider-biteship provider-komerce provider-shipper cache-memory hono; do
             dir="packages/$pkg"
             name=$(node -p "require('./$dir/package.json').name")
             version=$(node -p "require('./$dir/package.json').version")
