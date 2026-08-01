@@ -302,7 +302,7 @@ new MemoryCacheProvider({ provider, ttlMs?: number })
 
 - **Hanya `getRates()` yang di-cache** (read-only, deterministik per input). `trackShipment()`, `parseWebhook()`, dan `createShipment()` (side-effect nyata) selalu diteruskan ke provider asli tanpa cache.
 - Cache key dihitung dari request yang dinormalisasi (origin/destination/items), supaya object input berbeda tapi bermakna sama tetap `cache hit`.
-- TTL default 5 menit (opsi `ttlMs`, angka dalam ms); `0` mematikan cache.
+- TTL default 5 menit (opsi `ttlMs`, angka dalam ms); `0` mematikan cache. Entri di-evict otomatis lewat `setTimeout` setelah TTL lewat (pola sama dengan `RegionResolver` di core), jadi Map tidak tumbuh tanpa batas di server lama.
 - Ini **menambah dependency baru ke `package.json`** (`@ongkir-sdk/cache-memory`). `@ongkir-sdk/cache-redis` belum dibuat — di-skip karena butuh dependency eksternal (redis client) yang bukan Web-standard; kalau dibutuhkan nanti, pola yang sama.
 
 ## 12. Status

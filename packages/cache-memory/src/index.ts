@@ -30,6 +30,7 @@ export class MemoryCacheProvider implements ShippingProvider {
   private readonly ttlMs: number
   private readonly now: () => number
   private readonly cache = new Map<string, CachedRateResult>()
+  private readonly timers = new Map<string, ReturnType<typeof setTimeout>>()
 
   constructor(options: MemoryCacheOptions) {
     this.inner = options.provider
@@ -51,7 +52,7 @@ export class MemoryCacheProvider implements ShippingProvider {
     }
 
     const rates = await this.inner.getRates(params)
-    this.cache.set(key, { value: rates, expiresAt: now + this.ttlMs })
+    this.setEntry(key, rates, now)
     return cloneRates(rates)
   }
 
@@ -67,9 +68,28 @@ export class MemoryCacheProvider implements ShippingProvider {
     return this.inner.createShipment(params)
   }
 
-  /** Menghapus seluruh isi cache secara manual. Entri yang TTL-nya lewat diabaikan saat dibaca ulang. */
+  /** Menghapus seluruh isi cache dan membatalkan timer eviction yang tertunda. */
   clear(): void {
+    for (const timer of this.timers.values()) {
+      clearTimeout(timer)
+    }
+    this.timers.clear()
     this.cache.clear()
+  }
+
+  private setEntry(key: string, value: RateResult[], now: number): void {
+    const expiresAt = now + this.ttlMs
+    const existing = this.timers.get(key)
+    if (existing !== undefined) {
+      clearTimeout(existing)
+    }
+
+    this.cache.set(key, { value, expiresAt })
+    const timer = setTimeout(() => {
+      this.cache.delete(key)
+      this.timers.delete(key)
+    }, this.ttlMs)
+    this.timers.set(key, timer)
   }
 
   private cacheKey(params: RateRequest): string {

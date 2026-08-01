@@ -42,7 +42,7 @@ Kunci cache dibuat dari request ternormalisasi (origin, destination, dan items).
 
 ## API
 
-- `getRates(params)` — hasil di-cache selama TTL; hasil yang dikembalikan adalah salinan, jadi mutasi oleh caller tidak mencemari cache.
+- `getRates(params)` — hasil di-cache selama TTL; hasil yang dikembalikan adalah salinan, jadi mutasi oleh caller tidak mencemari cache. Entri di-evict otomatis dari memori setelah TTL lewat.
 - `trackShipment(id, options?)` — delegasi langsung.
 - `parseWebhook(payload, headers)` — delegasi langsung.
 - `createShipment(params)` — delegasi langsung.

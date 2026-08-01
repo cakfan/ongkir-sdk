@@ -440,8 +440,8 @@ export function toShipmentStatus(code?: number): ShipmentStatus {
   if (code === 1000) return 'confirmed'
   if (code >= 1001 && code <= 1044) return 'pickup'
   if (code >= 1050 && code <= 1190) return 'in_transit'
-  if (code >= 1310 && code <= 1360) return 'in_transit'
-  if (code >= 1410 && code <= 1420) return 'in_transit'
+  if (code >= 1310 && code <= 1330) return 'in_transit'
+  if (code === 1360) return 'pickup'
   return 'unknown'
 }
 

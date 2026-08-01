@@ -108,4 +108,28 @@ describe('MemoryCacheProvider', () => {
 
     expect(inner.calls).toBe(2)
   })
+
+  it('should evict entries automatically once ttl elapses', async () => {
+    const inner = new FakeProvider()
+    const cached = new MemoryCacheProvider({ provider: inner, ttlMs: 20 })
+
+    await cached.getRates(rateRequest)
+    expect(inner.calls).toBe(1)
+
+    await new Promise((resolve) => setTimeout(resolve, 40))
+    await cached.getRates(rateRequest)
+
+    expect(inner.calls).toBe(2)
+  })
+
+  it('should not evict entries after clear() before ttl elapses', async () => {
+    const inner = new FakeProvider()
+    const cached = new MemoryCacheProvider({ provider: inner, ttlMs: 10 })
+
+    await cached.getRates(rateRequest)
+    cached.clear()
+
+    await new Promise((resolve) => setTimeout(resolve, 20))
+    expect(inner.calls).toBe(1)
+  })
 })

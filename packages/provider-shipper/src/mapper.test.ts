@@ -295,6 +295,19 @@ describe('mapper', () => {
       expect(toShipmentStatus(3000)).toBe('delivered')
       expect(toShipmentStatus(undefined)).toBe('unknown')
     })
+
+    it('keeps delivery-exception codes in_transit but marks terminal return/fail as unknown', () => {
+      expect(toShipmentStatus(1310)).toBe('in_transit')
+      expect(toShipmentStatus(1320)).toBe('in_transit')
+      expect(toShipmentStatus(1330)).toBe('in_transit')
+      expect(toShipmentStatus(1360)).toBe('pickup')
+      expect(toShipmentStatus(1340)).toBe('unknown')
+      expect(toShipmentStatus(1370)).toBe('unknown')
+      expect(toShipmentStatus(1380)).toBe('unknown')
+      expect(toShipmentStatus(1410)).toBe('unknown')
+      expect(toShipmentStatus(1420)).toBe('unknown')
+      expect(toShipmentStatus(1390)).toBe('unknown')
+    })
   })
 
   describe('toCoreWebhookEvent', () => {
