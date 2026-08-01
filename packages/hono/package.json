@@ -1,6 +1,6 @@
 {
   "name": "@ongkir-sdk/hono",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Hono middleware untuk ongkir-sdk — expose provider cek ongkir (Biteship, RajaOngkir/Komerce, Shipper) sebagai REST routes.",
   "keywords": [
     "hono",
@@ -47,7 +47,7 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "@ongkir-sdk/core": "^2.0.0"
+    "@ongkir-sdk/core": "^2.0.1"
   },
   "peerDependencies": {
     "hono": ">=4",
