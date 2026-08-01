@@ -1,7 +1,19 @@
 {
   "name": "@ongkir-sdk/hono",
   "version": "1.1.0",
-  "description": "Hono middleware for ongkir-sdk — expose shipping providers as REST routes",
+  "description": "Hono middleware untuk ongkir-sdk — expose provider cek ongkir (Biteship, RajaOngkir/Komerce, Shipper) sebagai REST routes.",
+  "keywords": [
+    "hono",
+    "ongkir",
+    "shipping",
+    "rest-api",
+    "hono-middleware",
+    "tracking",
+    "indonesia",
+    "typescript",
+    "sdk"
+  ],
+  "homepage": "https://github.com/cakfan/ongkir-sdk",
   "license": "MIT",
   "repository": {
     "type": "git",

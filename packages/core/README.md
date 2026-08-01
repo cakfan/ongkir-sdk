@@ -1,6 +1,6 @@
 # @ongkir-sdk/core
 
-Tipe, kontrak, error, dan utilitas testing untuk `ongkir-sdk` — fondasi yang dipakai semua provider adapter.
+Tipe, kontrak, error, dan utilitas testing untuk `ongkir-sdk` — fondasi yang dipakai semua provider adapter untuk cek ongkir (shipping rates) & tracking pengiriman di Indonesia.
 
 ## Install
 
@@ -121,6 +121,17 @@ describe('MyProvider', () => {
   })
 })
 ```
+
+## FAQ
+
+**Apakah `@ongkir-sdk/core` sudah cukup untuk cek ongkir?**
+Belum — core hanya mendefinisikan contract, tipe, dan utilitas. Untuk memanggil API cek ongkir, pasang adapter provider seperti `@ongkir-sdk/biteship`, `@ongkir-sdk/komerce`, atau `@ongkir-sdk/shipper`.
+
+**Butuh API key?**
+Ya. Tiap provider memakai API key milikmu sendiri (bring-your-own-key). SDK tidak menyimpan atau mem-proxy key ke server mana pun.
+
+**Runtime apa yang didukung?**
+Node ≥18, Bun, Deno, dan Cloudflare Workers. Semua kode memakai Web-standard API (`fetch`, `crypto.subtle`) tanpa dependensi khusus Node.
 
 ## License
 

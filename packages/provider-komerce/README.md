@@ -53,6 +53,20 @@ const tracking = await provider.trackShipment('JNE001234567890', { courier: 'jne
 - Tier Starter dibatasi 100 hit cek ongkir per hari; upgrade ke Pro untuk kuota lebih besar.
 - Daftar kurir yang dicek mengikuti daftar 3PL yang tersedia di dokumentasi RajaOngkir (JNE, SiCepat, IDExpress, SAP, Ninja, J&T, TIKI, Wahana, POS, Sentral, Lion, REX).
 
+## FAQ
+
+**Apakah ini SDK resmi dari RajaOngkir atau Komerce?**
+Tidak. Ini adapter unofficial untuk SDK open source `ongkir-sdk`, tidak berafiliasi dengan Komerce maupun RajaOngkir.
+
+**Butuh API key?**
+Ya. Pakai key milikmu sendiri dari dashboard Collaborator Komerce (menu Developer → Settings → Api Key).
+
+**Kenapa `trackShipment` butuh courier?**
+API RajaOngkir mewajibkan kode kurir bersama nomor resi (misal `jne`). Tanpa courier, adapter melempar error dengan pesan yang jelas.
+
+**Runtime apa yang didukung?**
+Node ≥18, Bun, Deno, dan Cloudflare Workers.
+
 ## License
 
 MIT

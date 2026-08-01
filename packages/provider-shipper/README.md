@@ -3,6 +3,8 @@
 > Unofficial Shipper adapter for ongkir-sdk.
 > Not affiliated with, endorsed by, or officially connected to Shipper.
 
+Adapter TypeScript untuk cek ongkir (shipping rates), tracking, parser webhook, dan pembuatan order pengiriman via API Shipper (logistics v3). Dibangun di atas contract `ShippingProvider` dari `@ongkir-sdk/core` — ganti provider tanpa mengubah kode consumer.
+
 ## Installation
 
 ```bash
@@ -71,6 +73,20 @@ When `cashOnDelivery` is provided, the pricing re-query runs with `cod: true` an
 ### Insurance
 
 Shipper requires `use_insurance: true` when a rate's `must_use_insurance` is set (high-value items over the courier's threshold). The adapter reads that flag from the re-queried pricing response and sets `courier.use_insurance` accordingly — otherwise Shipper rejects the order.
+
+## FAQ
+
+**Apakah ini SDK resmi dari Shipper?**
+Tidak. Ini adapter unofficial untuk SDK open source `ongkir-sdk`, tidak berafiliasi dengan Shipper.
+
+**Butuh API key?**
+Ya. Pakai API key milikmu sendiri (header `X-API-Key`). Sandbox: `https://merchant-api-sandbox.shipper.id`, production: `https://merchant-api.shipper.id`.
+
+**Kenapa `getRates()`/`createShipment()` wajib `postalCode`?**
+API pricing Shipper butuh `area_id` level kelurahan yang di-resolve adapter dari postal code secara otomatis (dan di-cache per instance). Tanpa postal code, origin/destination tidak bisa di-resolve.
+
+**`trackShipment()` pakai nomor resi atau order ID?**
+Order ID Shipper. Adapter memanggil `GET /v3/order/{id}` untuk detail + AWB + status.
 
 ## License
 

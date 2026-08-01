@@ -48,6 +48,17 @@ Kunci cache dibuat dari request ternormalisasi (origin, destination, dan items).
 - `createShipment(params)` — delegasi langsung.
 - `clear()` — kosongkan seluruh cache secara manual.
 
+## FAQ
+
+**Apa yang di-cache?**
+Hanya hasil `getRates()`. `trackShipment()`, `createShipment()`, dan `parseWebhook()` selalu diteruskan langsung ke provider.
+
+**Berapa lama hasil cache disimpan?**
+TTL default 5 menit (`ttlMs`); set `0` untuk mematikan caching. Entri di-evict otomatis setelah TTL lewat.
+
+**Runtime apa yang didukung?**
+Node ≥18, Bun, Deno, dan Cloudflare Workers — murni Web-standard API, tanpa dependency eksternal.
+
 ## Tests
 
 ```bash

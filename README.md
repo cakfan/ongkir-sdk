@@ -3,6 +3,15 @@
 > **Unofficial** multi-provider TypeScript SDK for shipping rate checking and tracking in Indonesia.
 > Not affiliated with, endorsed by, or officially connected to Biteship, Komerce (RajaOngkir), or any courier service.
 
+## Features
+
+- **Satu contract untuk semua provider** (`ShippingProvider`) — cek ongkir, tracking resi, parse webhook, dan buat shipment dengan API yang sama, apa pun provider di baliknya.
+- **3 provider Indonesia siap pakai**: Biteship, Komerce (RajaOngkir), dan Shipper — ganti provider cukup ganti satu baris config.
+- **Error ternormalisasi** (`ShippingSDKError`) — kode error konsisten lintas provider, plus flag `retryable` untuk keputusan retry.
+- **Bring-your-own-key** — SDK murni client-side, tidak menyimpan atau mem-proxy API key kamu.
+- **Runtime-agnostic** — Node ≥18, Bun, Deno, dan Cloudflare Workers (Web-standard API).
+- **Opsional**: wrapper caching in-memory (`@ongkir-sdk/cache-memory`) dan REST middleware Hono (`@ongkir-sdk/hono`).
+
 ## Packages
 
 | Package | Description | Status |

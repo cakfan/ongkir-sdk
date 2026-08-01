@@ -1,7 +1,20 @@
 {
   "name": "@ongkir-sdk/shipper",
   "version": "0.1.0",
-  "description": "Unofficial Shipper adapter for ongkir-sdk. Not affiliated with Shipper.",
+  "description": "Unofficial Shipper adapter for ongkir-sdk — cek ongkir, tracking, webhook & create shipment via Shipper API. Not affiliated with Shipper.",
+  "keywords": [
+    "ongkir",
+    "shipping",
+    "shipper",
+    "courier",
+    "tracking",
+    "indonesia",
+    "typescript",
+    "sdk",
+    "api-adapter",
+    "ecommerce"
+  ],
+  "homepage": "https://github.com/cakfan/ongkir-sdk",
   "license": "MIT",
   "repository": {
     "type": "git",

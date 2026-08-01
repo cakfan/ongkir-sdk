@@ -105,6 +105,17 @@ Semua `ShippingSDKError` dari provider dinormalisasi ke JSON dengan HTTP status 
 
 Error validasi query/body → 400 `VALIDATION_ERROR`. Provider tidak terdaftar di map → 404 `PROVIDER_NOT_FOUND`. Error non-SDK tidak dibocorkan ke response (hanya di-`console.error`, response 500 generic).
 
+## FAQ
+
+**Provider apa saja yang bisa dipasang?**
+Semua yang mengimplementasikan `ShippingProvider` dari `@ongkir-sdk/core` — misal `@ongkir-sdk/biteship`, `@ongkir-sdk/komerce`, `@ongkir-sdk/shipper`, atau wrapper `@ongkir-sdk/cache-memory`.
+
+**Butuh API key?**
+Ya, setiap provider memakai API key milikmu sendiri (bring-your-own-key). Server ini jalan di infra kamu sendiri, bukan server milik SDK.
+
+**Runtime apa yang didukung?**
+Semua runtime yang didukung Hono: Node, Bun, Deno, dan Cloudflare Workers.
+
 ## Contoh
 
 Lihat `examples/hono-api` — server minimal yang mount Biteship dan Komerce sekaligus, ganti provider tinggal ubah `DEFAULT_PROVIDER`.

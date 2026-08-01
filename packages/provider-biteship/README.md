@@ -3,6 +3,8 @@
 > Unofficial Biteship adapter for ongkir-sdk.
 > Not affiliated with, endorsed by, or officially connected to Biteship.
 
+Adapter TypeScript untuk cek ongkir (shipping rates), tracking resi, parser webhook, dan pembuatan order pengiriman via API Biteship. Dibangun di atas satu contract `ShippingProvider` dari `@ongkir-sdk/core`, jadi kamu bisa mengganti provider tanpa mengubah kode consumer.
+
 ## Installation
 
 ```bash
@@ -57,6 +59,20 @@ const event = provider.parseWebhook(payload, headers)
 - `trackShipment()` — via Biteship tracking ID
 - `createShipment()` — via the orders API (live action, may incur charges)
 - `parseWebhook()` — `order.status`, `order.price`, `order.waybill_id` events
+
+## FAQ
+
+**Apakah ini SDK resmi dari Biteship?**
+Tidak. Ini adapter unofficial untuk SDK open source `ongkir-sdk`, tidak berafiliasi dengan Biteship.
+
+**Butuh API key?**
+Ya. Pakai key milikmu sendiri (bring-your-own-key), misal key sandbox `biteship_test.*` dari dashboard Testing Mode Biteship.
+
+**Runtime apa yang didukung?**
+Node ≥18, Bun, Deno, dan Cloudflare Workers — semua API memakai Web-standard (fetch, tanpa modul Node khusus).
+
+**Aman untuk create shipment di production?**
+`createShipment()` membuat order sungguhan yang menagih saldo akun Biteship. Selalu konfirmasi ke user dulu dan pakai `referenceId` untuk idempotency.
 
 ## License
 

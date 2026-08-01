@@ -1,7 +1,20 @@
 {
   "name": "@ongkir-sdk/core",
   "version": "2.0.0",
-  "description": "Core types, contract, errors, and testing utilities for ongkir-sdk",
+  "description": "TypeScript SDK inti untuk cek ongkir & tracking pengiriman Indonesia — types, contract ShippingProvider, error normalization, region resolver.",
+  "keywords": [
+    "ongkir",
+    "shipping",
+    "shipping-rates",
+    "tracking",
+    "indonesia",
+    "typescript",
+    "sdk",
+    "logistics",
+    "ecommerce",
+    "multi-provider"
+  ],
+  "homepage": "https://github.com/cakfan/ongkir-sdk",
   "license": "MIT",
   "repository": {
     "type": "git",

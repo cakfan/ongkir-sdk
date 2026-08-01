@@ -1,7 +1,20 @@
 {
   "name": "@ongkir-sdk/biteship",
   "version": "1.1.0",
-  "description": "Unofficial Biteship adapter for ongkir-sdk. Not affiliated with Biteship.",
+  "description": "Unofficial Biteship adapter for ongkir-sdk — cek ongkir (shipping rates), tracking, webhook & create shipment. Not affiliated with Biteship.",
+  "keywords": [
+    "ongkir",
+    "shipping",
+    "biteship",
+    "courier",
+    "tracking",
+    "indonesia",
+    "typescript",
+    "sdk",
+    "api-adapter",
+    "ecommerce"
+  ],
+  "homepage": "https://github.com/cakfan/ongkir-sdk",
   "license": "MIT",
   "repository": {
     "type": "git",
