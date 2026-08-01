@@ -3,6 +3,10 @@
 > **Unofficial** multi-provider TypeScript SDK for shipping rate checking and tracking in Indonesia.
 > Not affiliated with, endorsed by, or officially connected to Biteship, Komerce (RajaOngkir), or any courier service.
 
+[![npm version](https://img.shields.io/npm/v/%40ongkir-sdk%2Fcore)](https://www.npmjs.com/package/@ongkir-sdk/core)
+[![npm downloads](https://img.shields.io/npm/dm/%40ongkir-sdk%2Fcore)](https://www.npmjs.com/package/@ongkir-sdk/core)
+[![license MIT](https://img.shields.io/npm/l/%40ongkir-sdk%2Fcore)](https://opensource.org/licenses/MIT)
+
 ## Features
 
 - **Satu contract untuk semua provider** (`ShippingProvider`) — cek ongkir, tracking resi, parse webhook, dan buat shipment dengan API yang sama, apa pun provider di baliknya.
@@ -14,14 +18,31 @@
 
 ## Packages
 
-| Package | Description | Status |
-|---|---|---|
-| `@ongkir-sdk/core` | Types, contract, errors, shared contract test suite | ✅ v1 |
-| `@ongkir-sdk/biteship` | Biteship adapter (rates, tracking, webhook, shipment) | ✅ v1 |
-| `@ongkir-sdk/komerce` | Komerce (RajaOngkir) adapter (rates, tracking) | ✅ v1 |
-| `@ongkir-sdk/shipper` | Shipper adapter (rates, tracking, webhook, shipment) | ✅ v1 |
-| `@ongkir-sdk/cache-memory` | In-memory cache wrapper around any provider (rates only) | ✅ v1 |
-| `@ongkir-sdk/hono` | Hono middleware — expose providers as REST routes | ✅ v1 |
+| Package | Description | Version | Status |
+|---|---|---|---|
+| `@ongkir-sdk/core` | Types, contract, errors, shared contract test suite | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fcore)](https://www.npmjs.com/package/@ongkir-sdk/core) | ✅ released |
+| `@ongkir-sdk/biteship` | Biteship adapter (rates, tracking, webhook, shipment) | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fbiteship)](https://www.npmjs.com/package/@ongkir-sdk/biteship) | ✅ released |
+| `@ongkir-sdk/komerce` | Komerce (RajaOngkir) adapter (rates, tracking) | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fkomerce)](https://www.npmjs.com/package/@ongkir-sdk/komerce) | ✅ released |
+| `@ongkir-sdk/shipper` | Shipper adapter (rates, tracking, webhook, shipment) | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fshipper)](https://www.npmjs.com/package/@ongkir-sdk/shipper) | ✅ released |
+| `@ongkir-sdk/cache-memory` | In-memory cache wrapper around any provider (rates only) | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fcache-memory)](https://www.npmjs.com/package/@ongkir-sdk/cache-memory) | ✅ released |
+| `@ongkir-sdk/hono` | Hono middleware — expose providers as REST routes | [![npm](https://img.shields.io/npm/v/%40ongkir-sdk%2Fhono)](https://www.npmjs.com/package/@ongkir-sdk/hono) | ✅ released |
+
+## Installation
+
+Install core + adapter yang kamu pakai. Adapter otomatis ber-dependency ke `@ongkir-sdk/core`.
+
+```bash
+npm install @ongkir-sdk/core @ongkir-sdk/biteship
+# atau: npm install @ongkir-sdk/core @ongkir-sdk/komerce
+# atau: npm install @ongkir-sdk/core @ongkir-sdk/shipper
+```
+
+Paket opsional:
+
+```bash
+npm install @ongkir-sdk/hono          # REST middleware (butuh hono + zod)
+npm install @ongkir-sdk/cache-memory  # wrapper caching hasil getRates
+```
 
 ## Quick start
 
