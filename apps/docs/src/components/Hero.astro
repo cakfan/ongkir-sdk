@@ -1,5 +1,6 @@
 ---
 import type { StarlightRouteData } from '@astrojs/starlight/route-data'
+import { withBase } from '../utils/withBase'
 
 const starlightRoute = (Astro.locals as unknown as { starlightRoute: StarlightRouteData }).starlightRoute
 const { data } = starlightRoute.entry
@@ -20,7 +21,7 @@ const PAGE_TITLE_ID = '_top'
 			actions.length > 0 && (
 				<div class="hero-actions">
 					{actions.map(({ attrs, link: href, text, variant }) => (
-						<a class:list={['sl-link-button', variant ?? 'primary']} href={href} {...attrs}>
+						<a class:list={['sl-link-button', variant ?? 'primary']} href={withBase(href)} {...attrs}>
 							{text}
 						</a>
 					))}

@@ -33,11 +33,12 @@ hero:
       link: /getting-started/installation/
       variant: secondary
     - text: API Reference
-      link: /api/core/
+      link: /api/core/readme/
       variant: secondary
 ---
 
 import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components'
+import { withBase } from '../../utils/withBase'
 
 :::note[Unofficial SDK]
 Tidak berafiliasi dengan Biteship, Komerce, atau penyedia logistik mana pun. Kamu memakai API key sendiri (bring-your-own-key).
@@ -85,22 +86,22 @@ Tidak berafiliasi dengan Biteship, Komerce, atau penyedia logistik mana pun. Kam
 
 <CardGrid>
   <LinkCard
-    href="/getting-started/installation/"
+    href={withBase('/getting-started/installation/')}
     title="Instalasi"
     description="Pasang core dan adapter yang kamu butuhkan."
   />
   <LinkCard
-    href="/getting-started/quickstart/"
+    href={withBase('/getting-started/quickstart/')}
     title="Quickstart"
     description="Contoh cek ongkir dan tracking dari nol."
   />
   <LinkCard
-    href="/providers/biteship/"
+    href={withBase('/providers/biteship/')}
     title="Setup Provider"
     description="Panduan konfigurasi Biteship, Komerce, dan Shipper."
   />
   <LinkCard
-    href="/api/core/"
+    href={withBase('/api/core/readme/')}
     title="API Reference"
     description="Referensi lengkap dari source TypeScript."
   />
