@@ -17,6 +17,9 @@ const [shipperTypeDoc, shipperSidebarGroup] = createStarlightTypeDocPlugin()
 const [cacheTypeDoc, cacheSidebarGroup] = createStarlightTypeDocPlugin()
 const [honoTypeDoc, honoSidebarGroup] = createStarlightTypeDocPlugin()
 
+const siteUrl = 'https://cakfan.github.io/ongkir-sdk'
+const description = 'SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.'
+
 const fontLinks = [
   { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
   { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
@@ -29,14 +32,44 @@ const fontLinks = [
   },
 ]
 
+const seoHead = [
+  { tag: 'meta', attrs: { property: 'og:image', content: `${siteUrl}/og.png` } },
+  { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+  { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+  {
+    tag: 'meta',
+    attrs: {
+      property: 'og:image:alt',
+      content: 'ongkir-sdk — SDK cek ongkir multi-provider untuk Indonesia',
+    },
+  },
+  { tag: 'meta', attrs: { property: 'og:image:type', content: 'image/png' } },
+  { tag: 'meta', attrs: { name: 'twitter:image', content: `${siteUrl}/og.png` } },
+  { tag: 'meta', attrs: { property: 'og:locale', content: 'id_ID' } },
+  { tag: 'meta', attrs: { name: 'theme-color', content: '#0b0e17' } },
+  {
+    tag: 'script',
+    attrs: { type: 'application/ld+json' },
+    content: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'ongkir-sdk',
+      url: siteUrl,
+      inLanguage: 'id',
+      description,
+    }),
+  },
+]
+
 export default defineConfig({
   site: 'https://cakfan.github.io',
   base: '/ongkir-sdk/',
   integrations: [
     starlight({
       title: 'ongkir-sdk',
-      description: 'SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.',
-      head: fontLinks,
+      description,
+      head: [...fontLinks, ...seoHead],
+      favicon: '/favicon.svg',
       components: {
         Hero: './src/components/Hero.astro',
       },

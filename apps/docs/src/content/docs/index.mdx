@@ -1,6 +1,28 @@
 ---
 title: ongkir-sdk
 description: SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.
+head:
+  - tag: title
+    content: ongkir-sdk — SDK cek ongkir multi-provider untuk Indonesia
+  - tag: meta
+    attrs:
+      property: og:type
+      content: website
+  - tag: script
+    attrs:
+      type: application/ld+json
+    content: >-
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "ongkir-sdk",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Node.js, Bun, Deno, Cloudflare Workers",
+        "inLanguage": "id",
+        "url": "https://cakfan.github.io/ongkir-sdk/",
+        "description": "SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia. Biteship, Komerce (RajaOngkir), dan Shipper dengan satu contract.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "IDR" }
+      }
 hero:
   tagline: Bungkus API Biteship, RajaOngkir (Komerce), dan Shipper di balik satu contract — ganti provider tanpa mengubah kode consumer.
   actions:
