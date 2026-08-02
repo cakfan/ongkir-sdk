@@ -17,6 +17,18 @@ const [shipperTypeDoc, shipperSidebarGroup] = createStarlightTypeDocPlugin()
 const [cacheTypeDoc, cacheSidebarGroup] = createStarlightTypeDocPlugin()
 const [honoTypeDoc, honoSidebarGroup] = createStarlightTypeDocPlugin()
 
+const fontLinks = [
+  { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+  { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
+  {
+    tag: 'link',
+    attrs: {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap',
+    },
+  },
+]
+
 export default defineConfig({
   site: 'https://cakfan.github.io',
   base: '/ongkir-sdk/',
@@ -24,6 +36,22 @@ export default defineConfig({
     starlight({
       title: 'ongkir-sdk',
       description: 'SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.',
+      head: fontLinks,
+      components: {
+        Hero: './src/components/Hero.astro',
+      },
+      expressiveCode: {
+        styleOverrides: {
+          borderRadius: '0.875rem',
+          borderWidth: '1px',
+          borderColor: 'var(--sl-color-hairline)',
+          codeFontSize: '0.875rem',
+          frames: {
+            editorTabBarBackground: 'var(--sl-color-bg-nav)',
+            terminalBackground: 'var(--sl-color-bg-nav)',
+          },
+        },
+      },
       locales: {
         root: { label: 'Bahasa Indonesia', lang: 'id' },
       },

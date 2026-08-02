@@ -2,17 +2,43 @@
 title: ongkir-sdk
 description: SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.
 hero:
-  tagline: Bungkus API Biteship, RajaOngkir (Komerce), dan Shipper di balik satu contract — ganti provider tanpa ubah kode consumer.
+  tagline: Bungkus API Biteship, RajaOngkir (Komerce), dan Shipper di balik satu contract — ganti provider tanpa mengubah kode consumer.
   actions:
+    - text: Mulai cepat
+      link: /getting-started/quickstart/
+      variant: primary
     - text: Instalasi
       link: /getting-started/installation/
+      variant: secondary
     - text: API Reference
       link: /api/core/
+      variant: secondary
 ---
 
-> **Unofficial SDK.** Not affiliated with, endorsed by, or officially connected to Biteship, Komerce, or any courier service.
+import { Card, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components'
 
-`ongkir-sdk` adalah TypeScript SDK **multi-provider** untuk cek ongkir dan tracking pengiriman di Indonesia. Semua provider diakses lewat satu interface (`ShippingProvider`) — response selalu ternormalisasi dan error selalu dinormalisasi ke `ShippingSDKError`, apa pun bentuk asli API provider.
+:::note[Unofficial SDK]
+Tidak berafiliasi dengan Biteship, Komerce, atau penyedia logistik mana pun. Kamu memakai API key sendiri (bring-your-own-key).
+:::
+
+`ongkir-sdk` adalah TypeScript SDK **multi-provider** untuk cek ongkir dan tracking pengiriman di Indonesia. Semua provider diakses lewat satu interface (`ShippingProvider`) — response ternormalisasi dan error dinormalisasi ke `ShippingSDKError`, apa pun bentuk asli API provider.
+
+## Satu contract, semua provider
+
+<CardGrid>
+  <Card title="Satu contract" icon="approve-check-circle">
+    `getRates`, `trackShipment`, `parseWebhook`, `createShipment` — API yang sama untuk semua provider.
+  </Card>
+  <Card title="Error ternormalisasi" icon="list-format">
+    `ShippingSDKError` dengan kode konsisten lintas provider plus flag `retryable`.
+  </Card>
+  <Card title="Bring-your-own-key" icon="open-book">
+    Murni client-side. SDK tidak menyimpan atau mem-proxy API key kamu.
+  </Card>
+  <Card title="Runtime-agnostic" icon="right-arrow">
+    Node ≥18, Bun, Deno, dan Cloudflare Workers — murni Web-standard API.
+  </Card>
+</CardGrid>
 
 ## Package
 
@@ -25,18 +51,35 @@ hero:
 | `@ongkir-sdk/cache-memory` | Wrapper caching in-memory untuk hasil `getRates()` |
 | `@ongkir-sdk/hono` | Middleware Hono — expose provider sebagai REST endpoint |
 
-## Fitur
+## Mulai dalam 3 langkah
 
-- **Satu contract untuk semua provider** — cek ongkir, tracking, parse webhook, dan buat shipment dengan API yang sama.
-- **3 provider Indonesia siap pakai** — Biteship, Komerce (RajaOngkir), dan Shipper.
-- **Error ternormalisasi** (`ShippingSDKError`) — kode error konsisten lintas provider, plus flag `retryable`.
-- **Bring-your-own-key** — SDK murni client-side, tidak menyimpan atau mem-proxy API key kamu.
-- **Runtime-agnostic** — Node ≥18, Bun, Deno, dan Cloudflare Workers.
-- **Opsional** — wrapper caching in-memory (`@ongkir-sdk/cache-memory`) dan REST middleware Hono (`@ongkir-sdk/hono`).
+<Steps>
+1. Pasang `@ongkir-sdk/core` + adapter pilihanmu.
+2. Buat instance provider dengan API key milikmu.
+3. Panggil `getRates()` — hasil sudah ternormalisasi ke `RateResult[]`.
+</Steps>
 
 ## Baca selanjutnya
 
-- [Instalasi](/getting-started/installation/) — pasang package yang kamu butuhkan
-- [Quickstart](/getting-started/quickstart/) — contoh cek ongkir + tracking
-- [Providers](/providers/biteship/) — panduan setup per provider
-- [API Reference](/api/core/) — referensi API lengkap dari source TypeScript
+<CardGrid>
+  <LinkCard
+    href="/getting-started/installation/"
+    title="Instalasi"
+    description="Pasang core dan adapter yang kamu butuhkan."
+  />
+  <LinkCard
+    href="/getting-started/quickstart/"
+    title="Quickstart"
+    description="Contoh cek ongkir dan tracking dari nol."
+  />
+  <LinkCard
+    href="/providers/biteship/"
+    title="Setup Provider"
+    description="Panduan konfigurasi Biteship, Komerce, dan Shipper."
+  />
+  <LinkCard
+    href="/api/core/"
+    title="API Reference"
+    description="Referensi lengkap dari source TypeScript."
+  />
+</CardGrid>

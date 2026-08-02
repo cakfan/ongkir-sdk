@@ -1,0 +1,310 @@
+---
+import type { StarlightRouteData } from '@astrojs/starlight/route-data'
+
+const starlightRoute = (Astro.locals as unknown as { starlightRoute: StarlightRouteData }).starlightRoute
+const { data } = starlightRoute.entry
+const { title = data.title, tagline, actions = [] } = data.hero || {}
+
+const PAGE_TITLE_ID = '_top'
+---
+
+<div class="hero">
+	<div class="hero-copy">
+		<p class="hero-eyebrow">
+			<span class="hero-eyebrow-dot" aria-hidden="true"></span>
+			Multi-provider · Bring-your-own-key · Unofficial
+		</p>
+		<h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+		{tagline && <p class="tagline" set:html={tagline} />}
+		{
+			actions.length > 0 && (
+				<div class="hero-actions">
+					{actions.map(({ attrs, link: href, text, variant }) => (
+						<a class:list={['sl-link-button', variant ?? 'primary']} href={href} {...attrs}>
+							{text}
+						</a>
+					))}
+				</div>
+			)
+		}
+	</div>
+	<div class="hero-card" aria-hidden="true">
+		<div class="hero-card-top">
+			<span class="hero-card-label">shipping-provider</span>
+			<span class="hero-card-status"><i></i>ready</span>
+		</div>
+		<div class="hero-card-route">
+			<div class="route-row">
+				<span class="route-stop">ORIGIN</span>
+				<span class="route-node origin"></span>
+				<span class="route-track"><span class="route-truck"></span></span>
+				<span class="route-node dest"></span>
+				<span class="route-stop">DEST</span>
+			</div>
+		</div>
+		<div class="hero-card-awb">
+			<span>rates·12440 → 12240</span>
+			<strong>Rp&nbsp;18.000 — 2&nbsp;hari</strong>
+		</div>
+		<div class="hero-card-chips">
+			<span class="accent">@ongkir-sdk/core</span>
+			<span>biteship</span>
+			<span>komerce</span>
+			<span>shipper</span>
+		</div>
+	</div>
+</div>
+
+<style>
+	.hero {
+		position: relative;
+		display: grid;
+		gap: clamp(2rem, 4vw, 3.5rem);
+		align-items: center;
+		padding-block: clamp(2rem, 5vmin, 4rem);
+	}
+
+	.hero::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background-image: radial-gradient(var(--sl-color-hairline) 1px, transparent 1px);
+		background-size: 22px 22px;
+		-webkit-mask-image: radial-gradient(60% 60% at 75% 30%, #000, transparent 70%);
+		mask-image: radial-gradient(60% 60% at 75% 30%, #000, transparent 70%);
+		opacity: 0.6;
+	}
+
+	.hero-copy {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		max-width: 40rem;
+	}
+
+	.hero-eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		margin: 0;
+		font-family: var(--sl-font-mono);
+		font-size: 0.7rem;
+		font-weight: 500;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--sl-color-gray-3);
+	}
+
+	.hero-eyebrow-dot {
+		width: 0.5rem;
+		height: 0.5rem;
+		border-radius: 999px;
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 0 4px var(--sl-color-accent-low);
+	}
+
+	.hero h1 {
+		font-family: var(--sl-font-display);
+		font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+		line-height: 1.04;
+		letter-spacing: -0.02em;
+		color: var(--sl-color-white);
+		margin: 0;
+	}
+
+	.tagline {
+		margin: 0;
+		font-size: clamp(1rem, 1.4vw, 1.15rem);
+		line-height: 1.6;
+		color: var(--sl-color-gray-2);
+		max-width: 44ch;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+	}
+
+	/* ---- terminal/waybill card ---- */
+	.hero-card {
+		position: relative;
+		width: min(100%, 24rem);
+		margin-inline: auto;
+		padding: 1.5rem 1.5rem 1.25rem;
+		border: 1px solid var(--sl-color-hairline-light);
+		border-radius: 1.25rem;
+		background: var(--sl-color-bg-nav);
+		box-shadow: var(--sl-shadow-lg);
+		transform: rotate(1deg);
+		transition: transform 0.3s ease;
+	}
+
+	.hero-card:hover {
+		transform: rotate(0deg) translateY(-4px);
+	}
+
+	.hero-card-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		font-family: var(--sl-font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.1em;
+		color: var(--sl-color-gray-3);
+	}
+
+	.hero-card-status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		color: var(--sl-color-green);
+	}
+
+	.hero-card-status i {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: currentColor;
+		animation: hero-pulse 2.2s ease-in-out infinite;
+	}
+
+	@keyframes hero-pulse {
+		0%,
+		100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.35;
+		}
+	}
+
+	.hero-card-route {
+		margin-block: 1.75rem 1.25rem;
+	}
+
+	.route-row {
+		display: grid;
+		grid-template-columns: auto auto 1fr auto auto;
+		gap: 0.6rem;
+		align-items: center;
+	}
+
+	.route-stop {
+		font-family: var(--sl-font-mono);
+		font-size: 0.6rem;
+		letter-spacing: 0.14em;
+		color: var(--sl-color-gray-3);
+	}
+
+	.route-node {
+		width: 0.6rem;
+		height: 0.6rem;
+		border-radius: 50%;
+	}
+
+	.route-node.origin {
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 0 4px var(--sl-color-accent-low);
+	}
+
+	.route-node.dest {
+		background: var(--sl-color-gray-4);
+	}
+
+	.route-track {
+		position: relative;
+		height: 2px;
+		background: repeating-linear-gradient(
+			90deg,
+			var(--sl-color-gray-4) 0 5px,
+			transparent 5px 10px
+		);
+	}
+
+	.route-truck {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 9px;
+		height: 9px;
+		border-radius: 3px;
+		background: var(--sl-color-accent);
+		transform: translate(-50%, -50%);
+		animation: hero-truck 3s linear infinite;
+	}
+
+	@keyframes hero-truck {
+		from {
+			left: 0%;
+		}
+		to {
+			left: 100%;
+		}
+	}
+
+	.hero-card-awb {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding: 1rem 1.15rem;
+		border: 1px dashed var(--sl-color-hairline-light);
+		border-radius: 0.85rem;
+		background: var(--sl-color-bg);
+	}
+
+	.hero-card-awb span {
+		font-family: var(--sl-font-mono);
+		font-size: 0.62rem;
+		letter-spacing: 0.16em;
+		color: var(--sl-color-gray-3);
+	}
+
+	.hero-card-awb strong {
+		font-family: var(--sl-font-mono);
+		font-size: 1.25rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+		color: var(--sl-color-white);
+	}
+
+	.hero-card-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1.1rem;
+	}
+
+	.hero-card-chips span {
+		font-family: var(--sl-font-mono);
+		font-size: 0.66rem;
+		padding: 0.28rem 0.65rem;
+		border: 1px solid var(--sl-color-hairline-light);
+		border-radius: 999px;
+		color: var(--sl-color-gray-2);
+		background: var(--sl-color-bg);
+	}
+
+	.hero-card-chips span.accent {
+		color: var(--sl-color-text-accent);
+		border-color: var(--sl-color-accent);
+		background: var(--sl-color-accent-low);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-card-status i,
+		.route-truck {
+			animation: none;
+		}
+	}
+
+	@media (min-width: 50rem) {
+		.hero {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			gap: clamp(2rem, 5vw, 4rem);
+			padding-block: clamp(2.5rem, 6vmin, 4.5rem);
+		}
+	}
+</style>

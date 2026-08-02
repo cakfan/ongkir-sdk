@@ -1,7 +1,324 @@
-.sl-markdown-content a {
-  text-decoration-color: var(--sl-color-accent);
+/* ============================================================
+   ongkir-sdk — Starlight theme overrides
+   Identitas: courier/tracking — ink navy + indigo accent,
+   tipografi display (Space Grotesk) + mono (JetBrains Mono).
+   ============================================================ */
+
+/* ---------- Typography & layout tokens ---------- */
+:root {
+  --sl-font: "Inter", var(--sl-font-system);
+  --sl-font-mono: "JetBrains Mono", var(--sl-font-system-mono);
+  --sl-font-display: "Space Grotesk", var(--sl-font-system);
+
+  --sl-nav-height: 4rem;
+  --sl-content-width: 47rem;
+  --sl-sidebar-width: 19rem;
+}
+
+/* ---------- Palette: dark (default) ---------- */
+:root {
+  --sl-color-white: hsl(228 24% 94%);
+  --sl-color-gray-1: hsl(228 18% 90%);
+  --sl-color-gray-2: hsl(228 12% 76%);
+  --sl-color-gray-3: hsl(228 9% 60%);
+  --sl-color-gray-4: hsl(228 9% 46%);
+  --sl-color-gray-5: hsl(228 10% 28%);
+  --sl-color-gray-6: hsl(228 12% 18%);
+  --sl-color-black: hsl(228 22% 8%);
+
+  --sl-color-bg: hsl(228 24% 9%);
+  --sl-color-bg-nav: hsl(228 22% 11%);
+  --sl-color-bg-sidebar: hsl(228 22% 10%);
+  --sl-color-bg-inline-code: hsl(228 16% 15%);
+  --sl-color-bg-accent: hsl(245 84% 74%);
+
+  --sl-color-hairline-light: hsl(228 12% 24%);
+  --sl-color-hairline: hsl(228 12% 21%);
+  --sl-color-hairline-shade: hsl(228 12% 16%);
+
+  --sl-color-accent-low: hsl(245 42% 24%);
+  --sl-color-accent: hsl(245 72% 68%);
+  --sl-color-accent-high: hsl(244 90% 84%);
+
+  --sl-color-text-accent: var(--sl-color-accent-high);
+  --sl-color-text-invert: var(--sl-color-accent-low);
+
+  --sl-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.3);
+  --sl-shadow-md: 0 4px 12px rgb(0 0 0 / 0.28);
+  --sl-shadow-lg: 0 12px 40px rgb(0 0 0 / 0.4);
+}
+
+/* ---------- Palette: light ---------- */
+:root[data-theme="light"] {
+  --sl-color-white: hsl(228 30% 12%);
+  --sl-color-gray-1: hsl(228 24% 18%);
+  --sl-color-gray-2: hsl(228 16% 30%);
+  --sl-color-gray-3: hsl(228 12% 44%);
+  --sl-color-gray-4: hsl(228 12% 58%);
+  --sl-color-gray-5: hsl(228 14% 80%);
+  --sl-color-gray-6: hsl(228 18% 90%);
+  --sl-color-gray-7: hsl(228 24% 96%);
+  --sl-color-black: hsl(0 0% 100%);
+
+  --sl-color-bg: hsl(228 30% 98%);
+  --sl-color-bg-nav: hsl(0 0% 100%);
+  --sl-color-bg-sidebar: hsl(0 0% 100%);
+  --sl-color-bg-inline-code: hsl(228 34% 94%);
+  --sl-color-bg-accent: hsl(245 70% 50%);
+
+  --sl-color-hairline-light: hsl(228 20% 91%);
+  --sl-color-hairline: hsl(228 16% 89%);
+  --sl-color-hairline-shade: hsl(228 16% 92%);
+
+  --sl-color-accent-low: hsl(244 100% 97%);
+  --sl-color-accent: hsl(245 64% 52%);
+  --sl-color-accent-high: hsl(243 58% 34%);
+
+  --sl-color-text-accent: var(--sl-color-accent);
+  --sl-color-text-invert: hsl(0 0% 100%);
+
+  --sl-shadow-sm: 0 1px 2px rgb(16 24 40 / 0.06);
+  --sl-shadow-md: 0 4px 16px rgb(16 24 40 / 0.08);
+  --sl-shadow-lg: 0 16px 48px rgb(16 24 40 / 0.12);
+}
+
+/* ---------- Base polish ---------- */
+::selection {
+  background: var(--sl-color-accent);
+  color: var(--sl-color-text-invert);
+}
+
+:root {
+  scrollbar-color: var(--sl-color-gray-5) transparent;
+  scrollbar-width: thin;
+}
+
+:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Nav bar ---------- */
+.header {
+  background-color: color-mix(in srgb, var(--sl-color-bg-nav) 88%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--sl-color-hairline);
 }
 
 .site-title {
-  font-weight: 700;
+  font-family: var(--sl-font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar-pane {
+  border-inline-end: 1px solid var(--sl-color-hairline) !important;
+}
+
+.sidebar-content a {
+  border-radius: 0.5rem;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.sidebar-content a[aria-current="page"] {
+  font-weight: 600;
+}
+
+/* ---------- Right sidebar (TOC) ---------- */
+.right-sidebar-panel {
+  border-inline-start: 1px solid var(--sl-color-hairline);
+}
+
+/* ---------- Typography ---------- */
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+.sl-markdown-content h4,
+.sl-markdown-content h5 {
+  font-family: var(--sl-font-display);
+  letter-spacing: -0.015em;
+}
+
+.sl-markdown-content h2 {
+  padding-top: 0.5rem;
+}
+
+.sl-markdown-content a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.sl-markdown-content a:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* ---------- Code ---------- */
+code {
+  font-variant-ligatures: none;
+}
+
+.sl-markdown-content :not(pre) > code {
+  border-radius: 0.4rem;
+}
+
+.expressive-code .frame {
+  box-shadow: var(--sl-shadow-sm);
+}
+
+/* ---------- Asides ---------- */
+.starlight-aside {
+  border-radius: 0.75rem;
+  border: 1px solid var(--sl-color-hairline-light);
+}
+
+.starlight-aside__title {
+  font-weight: 600;
+}
+
+/* ---------- Tables ---------- */
+.sl-markdown-content table {
+  font-size: var(--sl-text-sm);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.sl-markdown-content thead {
+  background: var(--sl-color-bg-nav);
+}
+
+.sl-markdown-content thead th {
+  font-family: var(--sl-font-display);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Steps ---------- */
+.sl-steps > li::before {
+  background: var(--sl-color-accent);
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-text-invert);
+  font-family: var(--sl-font-mono);
+  font-weight: 600;
+}
+
+/* ---------- Cards (CardGrid) ---------- */
+.card-grid {
+  margin-block: 1.5rem;
+}
+
+.card,
+.card:nth-child(4n + 1),
+.card:nth-child(4n + 3),
+.card:nth-child(4n + 4),
+.card:nth-child(4n + 5) {
+  --sl-card-border: var(--sl-color-accent);
+  --sl-card-bg: var(--sl-color-accent-low);
+  border: 1px solid var(--sl-color-hairline-light);
+  background: var(--sl-color-bg-nav);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  gap: 0.75rem;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sl-color-accent);
+  box-shadow: var(--sl-shadow-md);
+}
+
+.card .title {
+  font-family: var(--sl-font-display);
+  font-size: var(--sl-text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  gap: 0.75rem;
+}
+
+.card .icon {
+  border-radius: 0.5rem;
+  border-width: 0;
+}
+
+.card .body {
+  font-size: var(--sl-text-sm);
+  line-height: 1.65;
+  color: var(--sl-color-gray-2);
+}
+
+.card .body code {
+  white-space: nowrap;
+}
+
+/* ---------- Link card ---------- */
+.sl-link-card {
+  border-radius: 0.75rem;
+  border-color: var(--sl-color-hairline-light);
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.sl-link-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--sl-color-accent) !important;
+  box-shadow: var(--sl-shadow-md);
+  background: var(--sl-color-bg-nav) !important;
+}
+
+.sl-link-card .title {
+  font-family: var(--sl-font-display);
+}
+
+/* ---------- Buttons (hero actions) ---------- */
+.sl-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  border: 1px solid transparent;
+  border-radius: 0.625rem;
+  font-size: var(--sl-text-sm);
+  font-weight: 500;
+  line-height: 1.2;
+  padding: 0.55rem 1.15rem;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color
+    0.15s ease;
+}
+
+.sl-link-button:hover {
+  transform: translateY(-1px);
+}
+
+.sl-link-button.primary {
+  background: var(--sl-color-accent);
+  color: var(--sl-color-text-invert);
+  box-shadow: var(--sl-shadow-md);
+}
+
+.sl-link-button.primary:hover {
+  color: var(--sl-color-text-invert);
+  box-shadow: var(--sl-shadow-lg);
+}
+
+.sl-link-button.secondary {
+  border-color: var(--sl-color-hairline-light);
+  color: var(--sl-color-white);
+}
+
+.sl-link-button.secondary:hover {
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-text-accent);
+}
+
+/* ---------- Footer ---------- */
+.sl-footer {
+  border-top: 1px solid var(--sl-color-hairline);
+  margin-top: 4rem;
+}
+
+/* ---------- Mobile menu toggle ---------- */
+.mobile-nav-toggle {
+  border-radius: 0.5rem;
 }
