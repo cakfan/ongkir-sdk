@@ -1,0 +1,42 @@
+---
+title: ongkir-sdk
+description: SDK TypeScript multi-provider untuk cek ongkir & tracking pengiriman di Indonesia.
+hero:
+  tagline: Bungkus API Biteship, RajaOngkir (Komerce), dan Shipper di balik satu contract — ganti provider tanpa ubah kode consumer.
+  actions:
+    - text: Instalasi
+      link: /getting-started/installation/
+    - text: API Reference
+      link: /api/core/
+---
+
+> **Unofficial SDK.** Not affiliated with, endorsed by, or officially connected to Biteship, Komerce, or any courier service.
+
+`ongkir-sdk` adalah TypeScript SDK **multi-provider** untuk cek ongkir dan tracking pengiriman di Indonesia. Semua provider diakses lewat satu interface (`ShippingProvider`) — response selalu ternormalisasi dan error selalu dinormalisasi ke `ShippingSDKError`, apa pun bentuk asli API provider.
+
+## Package
+
+| Package | Deskripsi |
+|---|---|
+| `@ongkir-sdk/core` | Types, contract, error normalization, region resolver, contract test suite |
+| `@ongkir-sdk/biteship` | Adapter Biteship — rates, tracking, webhook, shipment |
+| `@ongkir-sdk/komerce` | Adapter Komerce (RajaOngkir API V2) — rates, tracking |
+| `@ongkir-sdk/shipper` | Adapter Shipper (logistics v3) — rates, tracking, webhook, shipment |
+| `@ongkir-sdk/cache-memory` | Wrapper caching in-memory untuk hasil `getRates()` |
+| `@ongkir-sdk/hono` | Middleware Hono — expose provider sebagai REST endpoint |
+
+## Fitur
+
+- **Satu contract untuk semua provider** — cek ongkir, tracking, parse webhook, dan buat shipment dengan API yang sama.
+- **3 provider Indonesia siap pakai** — Biteship, Komerce (RajaOngkir), dan Shipper.
+- **Error ternormalisasi** (`ShippingSDKError`) — kode error konsisten lintas provider, plus flag `retryable`.
+- **Bring-your-own-key** — SDK murni client-side, tidak menyimpan atau mem-proxy API key kamu.
+- **Runtime-agnostic** — Node ≥18, Bun, Deno, dan Cloudflare Workers.
+- **Opsional** — wrapper caching in-memory (`@ongkir-sdk/cache-memory`) dan REST middleware Hono (`@ongkir-sdk/hono`).
+
+## Baca selanjutnya
+
+- [Instalasi](/getting-started/installation/) — pasang package yang kamu butuhkan
+- [Quickstart](/getting-started/quickstart/) — contoh cek ongkir + tracking
+- [Providers](/providers/biteship/) — panduan setup per provider
+- [API Reference](/api/core/) — referensi API lengkap dari source TypeScript

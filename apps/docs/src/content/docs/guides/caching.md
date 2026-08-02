@@ -1,0 +1,58 @@
+---
+title: Caching
+description: Wrapper caching in-memory untuk hasil getRates memakai @ongkir-sdk/cache-memory.
+---
+
+`@ongkir-sdk/cache-memory` adalah wrapper caching in-memory untuk `ShippingProvider` apa pun. Berguna kalau kamu memanggil `getRates()` berulang kali untuk request yang sama (mis. saat user mengetik kota tujuan di form checkout) dan tidak mau membebani API provider — terutama provider yang menghitung biaya secara real-time.
+
+## Instalasi
+
+```bash
+npm install @ongkir-sdk/cache-memory
+```
+
+## Penggunaan
+
+```ts
+import { MemoryCacheProvider } from '@ongkir-sdk/cache-memory'
+import { ShipperProvider } from '@ongkir-sdk/shipper'
+
+const shipper = new ShipperProvider({ apiKey: 'YOUR_API_KEY' })
+const provider = new MemoryCacheProvider({ provider: shipper })
+
+const rates = await provider.getRates({
+  origin: { postalCode: '10110' },
+  destination: { postalCode: '40111' },
+  items: [{ weightGrams: 1000, quantity: 1 }],
+})
+```
+
+## Yang di-cache
+
+Hanya `getRates()` yang di-cache. `trackShipment()`, `createShipment()`, dan `parseWebhook()` selalu diteruskan langsung ke provider — hasilnya tidak pernah di-cache.
+
+Kunci cache dibuat dari request ternormalisasi (origin, destination, dan items). Request yang sama akan memakai entri yang sama.
+
+## Konfigurasi
+
+| Opsi | Default | Deskripsi |
+|---|---|---|
+| `provider` | — | Instance `ShippingProvider` yang dibungkus. Wajib. |
+| `ttlMs` | `300_000` (5 menit) | Umur cache dalam ms. Set `0` untuk mematikan caching. |
+| `now` | `Date.now` | Supplier waktu, untuk testing. |
+
+## API
+
+- `getRates(params)` — hasil di-cache selama TTL; yang dikembalikan adalah salinan, jadi mutasi oleh caller tidak mencemari cache. Entri di-evict otomatis dari memori setelah TTL lewat.
+- `trackShipment(id, options?)` — delegasi langsung.
+- `parseWebhook(payload, headers)` — delegasi langsung.
+- `createShipment(params)` — delegasi langsung.
+- `clear()` — kosongkan seluruh cache secara manual.
+
+## FAQ
+
+**Apa yang di-cache?** Hanya hasil `getRates()`. Method lain selalu diteruskan langsung ke provider.
+
+**Berapa lama hasil cache disimpan?** TTL default 5 menit (`ttlMs`); set `0` untuk mematikan caching.
+
+**Runtime apa yang didukung?** Node ≥18, Bun, Deno, dan Cloudflare Workers — murni Web-standard API, tanpa dependency eksternal.

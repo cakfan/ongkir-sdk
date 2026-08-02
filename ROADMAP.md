@@ -105,7 +105,7 @@ Referensi: `PRD.md`, `ARCHITECTURE.md`
 - [x] Evaluasi provider berikutnya (Shipper, KiriminAja) — cek ketersediaan API publik dan ToS-nya (ulangi proses due-diligence seperti Biteship/Komerce)
 - [x] `@ongkir-sdk/shipper` (selesai 2026-08); `@ongkir-sdk/kiriminaja` tetap opsional
 - [x] Rate caching helper opsional: `@ongkir-sdk/cache-memory` (selesai 2026-08); `@ongkir-sdk/cache-redis` belum dibuat (butuh dependency redis client non Web-standard, pola sama — lihat ARCHITECTURE §11)
-- [ ] Evaluasi kebutuhan docs site (VitePress/Starlight) kalau traction sudah cukup — lihat diskusi dokumentasi di PRD
+- [x] Docs site: Astro Starlight di `apps/docs` + GitHub Pages (selesai 2026-08) — guide Bahasa Indonesia + API reference TypeDoc otomatis dari source tiap package, deploy via `.github/workflows/docs.yml`
 
 **Hasil due-diligence Shipper (dari logistics-docs.shipper.id):**
 - API publik tersedia (logistics v3), auth via header `X-API-Key`, base URL production `https://merchant-api.shipper.id`, sandbox `https://merchant-api-sandbox.shipper.id`. Tidak ditemukan field "affiliate/partnership" yang mengharuskan endorsement — tetap pakai disclaimer unofficial.

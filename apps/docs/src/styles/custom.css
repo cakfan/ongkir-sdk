@@ -1,0 +1,7 @@
+.sl-markdown-content a {
+  text-decoration-color: var(--sl-color-accent);
+}
+
+.site-title {
+  font-weight: 700;
+}
