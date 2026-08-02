@@ -9,6 +9,8 @@
     "typecheck": "bun run --filter './packages/*' typecheck",
     "test": "bun run --filter './packages/*' test",
     "changeset": "changeset",
+    "changeset:enter": "changeset pre enter",
+    "changeset:exit": "changeset pre exit",
     "version": "changeset version",
     "publish": "changeset publish"
   },

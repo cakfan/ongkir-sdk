@@ -163,6 +163,7 @@ export default defineConfig({
             { label: 'Webhooks', link: '/guides/webhooks/' },
             { label: 'Resolusi wilayah', link: '/guides/region/' },
             { label: 'Testing contract', link: '/guides/testing/' },
+            { label: 'Versioning & rilis', link: '/guides/versioning/' },
           ],
         },
         {

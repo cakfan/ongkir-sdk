@@ -50,6 +50,18 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          TAG=""
+          if [ -f .changeset/pre.json ]; then
+            MODE=$(node -p "require('./.changeset/pre.json').mode")
+            if [ "$MODE" = "pre" ]; then
+              TAG=$(node -p "require('./.changeset/pre.json').tag")
+            fi
+          fi
+          if [ -n "$TAG" ]; then
+            echo "mode pre-release aktif, dist-tag: $TAG"
+          else
+            echo "rilis stabil, dist-tag: latest"
+          fi
           for pkg in core provider-biteship provider-komerce provider-shipper cache-memory hono; do
             dir="packages/$pkg"
             name=$(node -p "require('./$dir/package.json').name")
@@ -60,5 +72,9 @@ jobs:
               continue
             fi
             echo "publish $name@$version"
-            (cd "$dir" && npm publish --provenance --access public)
+            if [ -n "$TAG" ]; then
+              (cd "$dir" && npm publish --provenance --access public --tag "$TAG")
+            else
+              (cd "$dir" && npm publish --provenance --access public)
+            fi
           done

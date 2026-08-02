@@ -43,6 +43,9 @@ Ikuti urutan fase di `ROADMAP.md`. Jangan kerjakan task Fase 2+ sebelum exit cri
 - Rilis dikelola lewat **Changesets**, bukan manual bump `package.json`.
 - Kalau mengerjakan perubahan yang perlu rilis, tambahkan changeset (`bunx changeset`) sebagai bagian dari task — jangan tinggalkan untuk manusia lakukan terpisah, kecuali diminta.
 - Versioning **independen per package**. Perubahan di satu provider adapter tidak otomatis bump versi package lain.
+- **SemVer per package**: perubahan `contract.ts`/tipe publik `core` → major; fitur baru backward-compatible → minor; bugfix → patch. Playbook lengkap di `docs/release.md`.
+- **Pre-release memakai Changesets pre-mode** dengan dist-tag per stage: `bun run changeset:enter alpha|beta|rc` → `changeset version` (jadi `X.Y.Z-<stage>.0`) → push (release.yml publish ke dist-tag stage). Naik stage: `changeset:exit` dulu lalu `enter` stage baru. Finalisasi: `changeset:exit` → `changeset version` (stabil, `latest`).
+- **Jangan pernah** push commit yang berisi `.changeset/pre.json` dengan `mode: pre` kalau tujuannya rilis stabil — CI akan publish ke dist-tag stage, bukan `latest`.
 
 ## 7. Larangan eksplisit
 
