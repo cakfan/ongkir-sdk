@@ -1,6 +1,6 @@
 {
   "name": "@ongkir-sdk/shipper",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Unofficial Shipper adapter for ongkir-sdk — cek ongkir, tracking, webhook & create shipment via Shipper API. Not affiliated with Shipper.",
   "keywords": [
     "ongkir",
@@ -37,7 +37,9 @@
     }
   },
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -48,7 +50,7 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "@ongkir-sdk/core": "^2.0.1"
+    "@ongkir-sdk/core": "^2.0.2"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",

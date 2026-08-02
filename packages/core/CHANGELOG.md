@@ -1,5 +1,11 @@
 # @ongkir-sdk/core
 
+## 2.0.2
+
+### Patch Changes
+
+- docs: README kini menautkan docsite live (https://cakfan.github.io/ongkir-sdk/) — badge + section Documentation di root README, dan section "Dokumentasi" di README tiap package dengan link ke halaman API reference masing-masing.
+
 ## 2.0.1
 
 ### Patch Changes

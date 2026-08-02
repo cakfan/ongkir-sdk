@@ -1,8 +1,17 @@
 {
   "name": "@ongkir-sdk/cache-memory",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "In-memory cache wrapper untuk provider ongkir-sdk — cache hasil getRates agar tidak membebani API cek ongkir.",
-  "keywords": ["ongkir", "cache", "caching", "shipping-rates", "typescript", "sdk", "indonesia", "provider-wrapper"],
+  "keywords": [
+    "ongkir",
+    "cache",
+    "caching",
+    "shipping-rates",
+    "typescript",
+    "sdk",
+    "indonesia",
+    "provider-wrapper"
+  ],
   "homepage": "https://github.com/cakfan/ongkir-sdk",
   "license": "MIT",
   "repository": {
@@ -26,7 +35,9 @@
     }
   },
   "sideEffects": false,
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -37,7 +48,7 @@
     "lint": "biome check src/"
   },
   "dependencies": {
-    "@ongkir-sdk/core": "^2.0.1"
+    "@ongkir-sdk/core": "^2.0.2"
   },
   "devDependencies": {
     "@types/bun": "^1.3.14",
