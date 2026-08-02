@@ -74,6 +74,10 @@ Node ≥18, Bun, Deno, dan Cloudflare Workers — semua API memakai Web-standard
 **Aman untuk create shipment di production?**
 `createShipment()` membuat order sungguhan yang menagih saldo akun Biteship. Selalu konfirmasi ke user dulu dan pakai `referenceId` untuk idempotency.
 
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/biteship/) (halaman `@ongkir-sdk/biteship`).
+
 ## License
 
 MIT

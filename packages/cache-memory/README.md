@@ -64,3 +64,7 @@ Node ≥18, Bun, Deno, dan Cloudflare Workers — murni Web-standard API, tanpa 
 ```bash
 bun run test
 ```
+
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/cache-memory/) (halaman `@ongkir-sdk/cache-memory`).

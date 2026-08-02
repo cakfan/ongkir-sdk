@@ -119,3 +119,7 @@ Semua runtime yang didukung Hono: Node, Bun, Deno, dan Cloudflare Workers.
 ## Contoh
 
 Lihat `examples/hono-api` — server minimal yang mount Biteship dan Komerce sekaligus, ganti provider tinggal ubah `DEFAULT_PROVIDER`.
+
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/hono/) (halaman `@ongkir-sdk/hono`).

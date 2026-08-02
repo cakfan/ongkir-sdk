@@ -88,6 +88,10 @@ API pricing Shipper butuh `area_id` level kelurahan yang di-resolve adapter dari
 **`trackShipment()` pakai nomor resi atau order ID?**
 Order ID Shipper. Adapter memanggil `GET /v3/order/{id}` untuk detail + AWB + status.
 
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/shipper/) (halaman `@ongkir-sdk/shipper`).
+
 ## License
 
 MIT

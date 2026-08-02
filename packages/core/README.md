@@ -133,6 +133,10 @@ Ya. Tiap provider memakai API key milikmu sendiri (bring-your-own-key). SDK tida
 **Runtime apa yang didukung?**
 Node ≥18, Bun, Deno, dan Cloudflare Workers. Semua kode memakai Web-standard API (`fetch`, `crypto.subtle`) tanpa dependensi khusus Node.
 
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/core/) (halaman `@ongkir-sdk/core`).
+
 ## License
 
 MIT

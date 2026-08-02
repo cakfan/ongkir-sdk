@@ -67,6 +67,10 @@ API RajaOngkir mewajibkan kode kurir bersama nomor resi (misal `jne`). Tanpa cou
 **Runtime apa yang didukung?**
 Node ≥18, Bun, Deno, dan Cloudflare Workers.
 
+## Dokumentasi
+
+Panduan lengkap dan API reference: [ongkir-sdk docs](https://cakfan.github.io/ongkir-sdk/api/komerce/) (halaman `@ongkir-sdk/komerce`).
+
 ## License
 
 MIT

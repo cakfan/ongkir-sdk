@@ -6,6 +6,11 @@
 [![npm version](https://img.shields.io/npm/v/%40ongkir-sdk%2Fcore)](https://www.npmjs.com/package/@ongkir-sdk/core)
 [![npm downloads](https://img.shields.io/npm/dm/%40ongkir-sdk%2Fcore)](https://www.npmjs.com/package/@ongkir-sdk/core)
 [![license MIT](https://img.shields.io/npm/l/%40ongkir-sdk%2Fcore)](https://opensource.org/licenses/MIT)
+[![docs](https://img.shields.io/badge/docs-online-8a90ff)](https://cakfan.github.io/ongkir-sdk/)
+
+## Documentation
+
+Dokumentasi lengkap: [**ongkir-sdk docs**](https://cakfan.github.io/ongkir-sdk/) — panduan Bahasa Indonesia (instalasi, quickstart, setup provider, error handling, caching, webhooks, testing) plus API reference TypeDoc untuk setiap package.
 
 ## Features
 
