@@ -4,6 +4,10 @@ import ratesFixture from './__fixtures__/rates-response.json'
 import trackingFixture from './__fixtures__/tracking-response.json'
 import webhookFixture from './__fixtures__/webhook-payload.json'
 import {
+  type BiteshipCreateOrderResponse,
+  type BiteshipRateResponse,
+  type BiteshipTrackingResponse,
+  type BiteshipWebhookPayload,
   toBiteshipCreateOrderRequest,
   toBiteshipRateRequest,
   toCoreRateResults,
@@ -46,7 +50,7 @@ describe('toBiteshipRateRequest', () => {
 
 describe('toCoreRateResults', () => {
   it('should normalize Biteship pricing to RateResult[]', () => {
-    const results = toCoreRateResults(ratesFixture as any)
+    const results = toCoreRateResults(ratesFixture as BiteshipRateResponse)
 
     expect(results).toHaveLength(2)
 
@@ -66,7 +70,7 @@ describe('toCoreRateResults', () => {
 
 describe('toCoreTrackingResult', () => {
   it('should normalize Biteship tracking to TrackingResult', () => {
-    const result = toCoreTrackingResult(trackingFixture as any)
+    const result = toCoreTrackingResult(trackingFixture as BiteshipTrackingResponse)
 
     expect(result.provider).toBe('biteship')
     expect(result.trackingId).toBe('6051861741a37414e6637fab')
@@ -80,7 +84,7 @@ describe('toCoreTrackingResult', () => {
 describe('toCoreWebhookEvent', () => {
   it('should normalize Biteship webhook to WebhookEvent', () => {
     const headers = new Headers({ 'content-type': 'application/json' })
-    const result = toCoreWebhookEvent(webhookFixture as any, headers)
+    const result = toCoreWebhookEvent(webhookFixture as BiteshipWebhookPayload, headers)
 
     expect(result.provider).toBe('biteship')
     expect(result.type).toBe('order.status')
@@ -160,7 +164,7 @@ describe('toBiteshipCreateOrderRequest', () => {
 
 describe('toCoreShipmentResult', () => {
   it('should normalize Biteship create order response to ShipmentResult', () => {
-    const result = toCoreShipmentResult(createOrderFixture as any)
+    const result = toCoreShipmentResult(createOrderFixture as BiteshipCreateOrderResponse)
 
     expect(result.provider).toBe('biteship')
     expect(result.orderId).toBe('5dd599ebdefcd4158eb8470b')
