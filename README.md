@@ -102,6 +102,7 @@ app.route('/', createShippingRoutes({
 - [PRD.md](./PRD.md) — produk & scope
 - [ARCHITECTURE.md](./ARCHITECTURE.md) — keputusan arsitektur (final untuk v1)
 - [ROADMAP.md](./ROADMAP.md) — progress fase
+- [CONTRIBUTING.md](./CONTRIBUTING.md) — panduan berkontribusi
 - [docs/deployment.md](./docs/deployment.md) — deploy instance `api-wilayah-indonesia`
 - [`examples/node-basic`](./examples/node-basic) — contoh SDK langsung
 - [`examples/hono-api`](./examples/hono-api) — contoh REST API

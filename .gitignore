@@ -4,3 +4,6 @@ apps/docs/dist/
 apps/docs/.astro/
 *.tsbuildinfo
 .env
+
+banner-ongkir-sdk.png
+discord-post.md
