@@ -89,7 +89,7 @@ Catatan implementasi:
 | Komerce (RajaOngkir) | ✅ (v1) | ✅ (v1) | Tergantung tier | ❌ (tier Shipping Cost) |
 | Shipper | ✅ (v3) | ✅ (v3) | ✅ (v3) | ✅ (v3) |
 
-**v1 scope: read-only** — `getRates` + `trackShipment` + webhook parser. `createShipment` (buat pesanan/AWB aktual ke provider) digeser ke v2 supaya v1 bisa rilis lebih cepat dan teruji dulu di jalur yang lebih sederhana (tidak ada side-effect transaksional ke provider).
+**v1 scope: read-only** — `getRates` + `trackShipment` + webhook parser. `createShipment` (buat pesanan/AWB aktual ke provider) digeser ke v2 supaya v1 bisa rilis lebih cepat dan teruji dulu di jalur yang lebih sederhana (tidak ada side-effect transaksional ke provider). *(Status: keputusan ini sudah terealisasi — v1 read-only rilis, lalu Fase 4/v2 `createShipment` sudah diimplementasikan di `contract.ts`, Biteship, dan Shipper; lihat ROADMAP.)*
 
 Provider lain (KiriminAja) masuk roadmap v3 opsional; Shipper sudah selesai di Fase 5.
 
@@ -124,7 +124,7 @@ Provider lain (KiriminAja) masuk roadmap v3 opsional; Shipper sudah selesai di F
 
 ## 12. Roadmap fase tinggi
 
-1. **Fase 0 — Fondasi**: core contract (read-only: `getRates`, `trackShipment`, `parseWebhook`), types, error normalization. Deploy instance `api-wilayah-indonesia` + HTTP client resolver di core.
+1. **Fase 0 — Fondasi**: core contract (read-only: `getRates`, `trackShipment`, `parseWebhook`), types, error normalization. Deploy instance `api-wilayah-indonesia` + HTTP client resolver di core. *(Status: selesai, dan core contract sudah diperluas oleh `createShipment` di Fase 4.)*
 2. **Fase 1 — Provider Biteship**: rate check, tracking, webhook parser.
 3. **Fase 2 — Provider Komerce**: rate check, tracking.
 4. **Fase 3 — Hono adapter**: middleware siap pakai untuk expose endpoint `/rates`, `/track` di atas provider manapun.

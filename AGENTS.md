@@ -14,7 +14,8 @@ Aturan operasional untuk AI coding agent yang bekerja di repo ini. Baca `PRD.md`
 
 Ikuti urutan fase di `ROADMAP.md`. Jangan kerjakan task Fase 2+ sebelum exit criteria fase sebelumnya terpenuhi, kecuali diminta eksplisit.
 
-- **v1 = read-only.** `createShipment` **tidak boleh** ditambahkan ke `contract.ts` atau adapter mana pun sebelum Fase 4 secara eksplisit dimulai. Kalau ada task yang menyinggung "buat order pengiriman", konfirmasi dulu apakah ini memang sudah masuk Fase 4.
+- **Fase 4 (v2) sudah selesai:** `createShipment` sudah ada di `contract.ts`. Provider adapter wajib mengimplementasikannya atau melempar `CREATE_SHIPMENT_NOT_SUPPORTED` (contoh: Komerce, batasan tier Shipping Cost).
+- **`createShipment` punya side-effect biaya nyata** (membuat order sungguhan ke provider). Jangan pernah memanggilnya di unit test/CI/fixture — verifikasi lewat error path & mock saja, sesuaikan pola yang ada di provider lain.
 
 ## 3. Konvensi kode
 
